@@ -5,9 +5,9 @@
 ;   to display the string "MBR is running" on the screen.
 ;
 ; The interrupt info can check the following site:
-;       http://www.ctyme.com/intr/rb-0210.htm
+;	http://www.ctyme.com/intr/rb-0210.htm
 ; character color:
-;		http://www.ctyme.com/intr/rb-0098.htm#Table15
+;	http://www.ctyme.com/intr/rb-0098.htm#Table15
 ;
 SECTION MBR vstart=0x7c00
 
@@ -49,8 +49,8 @@ SECTION MBR vstart=0x7c00
 ;	character color is set to red
 ;	please refer to http://www.ctyme.com/intr/rb-0098.htm#Table15
 	mov bx, 0x4
-    ; reset DH, DL to begin from the 1st position
-    mov dx, 0
+	; reset DH, DL to begin from the 1st position
+	mov dx, 0
 	int 0x10
 
 ; block here
