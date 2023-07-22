@@ -36,7 +36,7 @@ codes:
 [printString.asm](./bare/printString.asm) - MBR prints a string
 "MBR is running" via BIOS interrupt
 
-[graphics.asm](./bare/graphics.asm) - MBR prints a tring
+[graphics.asm](./bare/graphics.asm) - MBR prints a string
 "2 MBR" directly to the memory of Graphics Card
 
 [harddisk.asm](./bare/harddisk.asm) - MBR loads a "loader" from

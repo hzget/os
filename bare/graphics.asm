@@ -5,9 +5,10 @@
 ;   in the address from 0x8000
 ;
 ;	BIOS interrupt involved: 0x10
-;   please refer to
-;		https://grandidierite.github.io/bios-interrupts/
-;		http://www.ctyme.com/intr/int-10.htm
+;
+;	please refer to
+;	https://grandidierite.github.io/bios-interrupts/
+;	http://www.ctyme.com/intr/int-10.htm
 ;
 SECTION MBR vstart=0x7c00
 
