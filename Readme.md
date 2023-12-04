@@ -31,7 +31,7 @@ MBR runs in REAL mode and loads the "kernel loader" into memory.
 The "loader" switches to PROTECTED mode and loads kernel
 into memory and run it. Now the Operating System (the kernel) is running.
 
-codes:
+codes (env to run the code [ENV][bochs env]):
 
 [printString.asm](./bare/printString.asm) - MBR prints a string
 "MBR is running" via BIOS interrupt
@@ -44,3 +44,9 @@ harddisk to the memory and then runs it
 
 [toyloader.asm](./bare/toyloader.asm) - a toy loader loaded by
 a MBR program
+
+[main_pm.asm](./bare/main_pm.asm) - MBR prints a string in realmode then
+switches to protected mode and prints a string in that mode
+
+[bochs env]: https://hzget.github.io/notes/os/bare/env.md
+
