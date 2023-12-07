@@ -48,7 +48,7 @@ a MBR program
 [main_pm.asm](./bare/main_pm.asm) - MBR prints a string in realmode then
 switches to protected mode and prints a string in that mode
 
-[enter kernel](./kernel/readme.md) - shows how to run into kernel code
+[enter kernel](./kernel/Readme.md) - shows how to run into kernel code
 
 [bochs env]: https://hzget.github.io/notes/os/bare/env.md
 
