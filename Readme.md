@@ -45,10 +45,10 @@ harddisk to the memory and then runs it
 [toyloader.asm](./bare/toyloader.asm) - a toy loader loaded by
 a MBR program
 
-[main_pm.asm](./bare/main_pm.asm) - MBR prints a string in realmode then
+[pmode.asm](./bare/pmode.asm) - MBR prints a string in realmode then
 switches to protected mode and prints a string in that mode
 
-[enter kernel](./kernel/) - shows how to run into kernel code
+[enter kernel](./bare/kernel/) - shows how to run into kernel code
 
 [bochs env]: https://hzget.github.io/notes/os/bare/env.md
 

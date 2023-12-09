@@ -1,5 +1,5 @@
 ;
-; main_pm.asm
+; pmode.asm
 ;
 ;   It illustrates how to switch from real mode
 ;   to protected mode and run code in it.
@@ -37,10 +37,10 @@ call main
 ; we will never return here if the above is successful
 jmp $
 
-%include "gdt.asm"
-%include "print_msg_rm.asm"
-%include "print_msg_pm.asm"
-%include "switch_to_pm.asm"
+%include "utils/gdt.asm"
+%include "utils/print_msg_rm.asm"
+%include "utils/print_msg_pm.asm"
+%include "utils/switch_to_pm.asm"
 
 [bits 32]
 main:
