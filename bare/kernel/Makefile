@@ -2,6 +2,12 @@
 #
 # Note:
 #
+#   Memory Space
+#
+#   mbr    0x7c00  -- real mode address
+#   loader 0x1000  -- real mode address
+#   kernel 0x10000 -- protected mode address
+#
 #   Linker:
 #
 #   The loader will load kernel image to 0x10000
