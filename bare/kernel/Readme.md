@@ -11,9 +11,8 @@ and then jump to run kernel code.
 Memory Space
 -------------
 
-mbr    0x7c00  -- real mode address
-loader 0x1000  -- real mode address
-
+mbr    0x7c00  -- real mode address  
+loader 0x1000  -- real mode address  
 kernel 0x10000 -- protected mode address
 
 instructions
@@ -47,7 +46,7 @@ and then jump there to run the kernel code.
 Thus the linker should set that text setion begins from 0x10000.
 It just uses `-Ttext 0x10000` for that.
 
-**!!!Attention!!!***
+**!!!Attention!!!**
 the order of the `*.o` files in the ld command is very important.
 start.o should be the first so that its code is in the beginning
 of the text section. It in turn makes sure that `_start` in
