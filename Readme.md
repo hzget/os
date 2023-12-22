@@ -12,11 +12,14 @@ Difference
 What's the difference from other tutorials of OS ?
 ***It is written from MY point of view***.
 
+Besides, it just log my os learning tour.
+
 Structure
 ---------
 
-* before running an os
-* kernel
+* [bare](./bare): code on "bared" board before running an os
+* [littleos](./littleos): relating to kernel & drivers
+in [Little OS Book][littleosbook]
 
 Before Running An OS
 --------------------
@@ -31,24 +34,20 @@ MBR runs in REAL mode and loads the "kernel loader" into memory.
 The "loader" switches to PROTECTED mode and loads kernel
 into memory and run it. Now the Operating System (the kernel) is running.
 
-codes (env to run the code [ENV][bochs env]):
+[bare](./bare) focus on writing MBR and kernel loader that
+run on the "bared" board. 
 
-[printString.asm](./bare/printString.asm) - MBR prints a string
-"MBR is running" via BIOS interrupt
+Little OS Book
+--------------
 
-[graphics.asm](./bare/graphics.asm) - MBR prints a string
-"2 MBR" directly to the memory of Graphics Card
+[Littel OS Book][littleosbook] is a practical guide to writing
+your own x86 operating system. It is designed to give enough help
+with the technical details while at the same time not reveal
+too much with samples and code excerpts.
 
-[harddisk.asm](./bare/harddisk.asm) - MBR loads a "loader" from
-harddisk to the memory and then runs it
+It foucs on writing kernel and drivers. It just uses grub as
+the bootloader.
 
-[toyloader.asm](./bare/toyloader.asm) - a toy loader loaded by
-a MBR program
+Our repo will complete the code in this book.
 
-[pmode.asm](./bare/pmode.asm) - MBR prints a string in realmode then
-switches to protected mode and prints a string in that mode
-
-[enter kernel](./bare/kernel/) - shows how to run into kernel code
-
-[bochs env]: https://hzget.github.io/notes/os/bare/env.md
-
+[littleosbook]: https://littleosbook.github.io/
