@@ -1,4 +1,4 @@
-OBJECTS = loader.o kmain.o framebuffer.o io.o
+OBJECTS = loader.o kmain.o framebuffer.o io.o serial.o
 CC = gcc
 CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
 	-nostartfiles -nodefaultlibs -Wall -Wextra -Werror -g -c
@@ -29,7 +29,7 @@ bochs: os.iso
 
 qemu: os.iso
 #	qemu-system-x86_64 -boot d -cdrom os.iso -m 4 -monitor stdio
-	qemu-system-i386 -boot d -cdrom os.iso -m 4
+	qemu-system-i386 -boot d -cdrom os.iso -m 4 -serial file:com1.qemu.out
 qemugdb: os.iso
 	#qemu-system-i386 -s -S -m 32M -boot c -hda master.img
 	qemu-system-i386 -s -S -m 4 -boot d -cdrom os.iso
@@ -41,5 +41,5 @@ qemugdb: os.iso
 	$(AS) $(ASFLAGS) $< -o $@
 
 clean:
-	rm -rf *.o kernel.elf os.iso
+	rm -rf *.o kernel.elf os.iso *.out
 
