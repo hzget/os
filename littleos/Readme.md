@@ -26,10 +26,10 @@ hides the detail hardware operation and provide
 a `write` function with the following declaration:
 
 ```bash
-int write(char *buf, unsigned int len);
+int fb_write(char *buf, unsigned int len);
 ```
 
-The kernel can use it directly to write a buffer to the console.
+The kernel can use it directly to write a buffer to the framebuffer.
 Detailed hareware operations are implemented in
 [io.s](./io.s) and [framebuffer.c](./framebuffer.c).
 
