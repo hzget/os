@@ -5,7 +5,7 @@
 char welcome[] = "Little OS";
 
 void kmain() {
-    write(welcome, sizeof(welcome));
+    fb_write(welcome, sizeof(welcome));
     serial_write(welcome, sizeof(welcome));
 }
 

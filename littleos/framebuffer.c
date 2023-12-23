@@ -13,12 +13,7 @@
 
 #define FRAMEBUFFER_ADDRESS 0x000B8000
 
-/** fb_move_cursor:
- *  Moves the cursor of the framebuffer to the given position
- *
- *  @param pos The new position of the cursor
- */
-void fb_move_cursor(unsigned short pos);
+static unsigned short __fb_present_pos = 0x0;
 
 /** fb_write_cell:
  *  Writes a character with the given foreground and background to position i
@@ -29,25 +24,7 @@ void fb_move_cursor(unsigned short pos);
  *  @param fg The foreground color
  *  @param bg The background color
  */
-void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned char bg);
-
-int fb_write_str(char *buf, unsigned int len);
-
-
-
-
-unsigned short __fb_present_pos = 0x0;
-
-/** fb_write_cell:
- *  Writes a character with the given foreground and background to position i
- *  in the framebuffer.
- *
- *  @param i  The location in the framebuffer
- *  @param c  The character
- *  @param fg The foreground color
- *  @param bg The background color
- */
-void fb_write_cell(unsigned int i, char c,
+static void fb_write_cell(unsigned int i, char c,
                    unsigned char fg, unsigned char bg) {
     char *fb = (char *) FRAMEBUFFER_ADDRESS;
     fb[i] = c;
@@ -60,7 +37,7 @@ void fb_write_cell(unsigned int i, char c,
  *
  *  @param pos The new position of the cursor
  */
-void fb_move_cursor(unsigned short pos) {
+static void fb_move_cursor(unsigned short pos) {
     outb(FB_COMMAND_PORT, FB_HIGH_BYTE_COMMAND);
     outb(FB_DATA_PORT,    ((pos >> 8) & 0x00FF));
     outb(FB_COMMAND_PORT, FB_LOW_BYTE_COMMAND);
@@ -68,7 +45,14 @@ void fb_move_cursor(unsigned short pos) {
     __fb_present_pos = pos;
 }
 
-int fb_write_str(char *buf, unsigned int len) {
+/** fb_write:
+ *  Write a buffer of bytes to framebuffer
+ *
+ *  @param buf A pointer to the buffer
+ *  @param len The length to write
+ *  @return len The length has been written
+ */
+int fb_write(char *buf, unsigned int len) {
     unsigned int i;
     for(i=0; i<len; i++) {
         /* Write character at position i */
