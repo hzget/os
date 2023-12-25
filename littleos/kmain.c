@@ -1,3 +1,4 @@
+/** @file */
 
 #include "framebuffer.h"
 #include "serial.h"

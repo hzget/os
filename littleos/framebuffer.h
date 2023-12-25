@@ -1,3 +1,4 @@
+/** @file */
 
 /** fb_write:
  *  Write a buffer of bytes to framebuffer

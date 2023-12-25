@@ -16,9 +16,9 @@ structure
 
 [loader.s](./loader.s) is the entrance of the kernel  
 [framebuffer.h](./framebuffer.h), [io.s](./io.s) an output driver
-to write to framebuffer
-[serial.h](./serial.h) an serial driver to write to a serial port
-[segments.h](./segments.h), [gdt.s](./gdt.s) install a new gdt
+to write to framebuffer  
+[serial.h](./serial.h) an serial driver to write to a serial port  
+[segments.h](./segments.h), [gdt.s](./gdt.s) install a new gdt  
 
 drivers
 -------

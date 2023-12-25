@@ -1,3 +1,4 @@
+/** @file */
 #include "io.h"
 
 /* The I/O ports */
