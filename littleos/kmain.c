@@ -1,8 +1,8 @@
 /** @file */
 
 #include "framebuffer.h"
-#include "serial.h"
 #include "segments.h"
+#include "serial.h"
 
 char welcome[] = "Little OS";
 
@@ -11,4 +11,3 @@ void kmain() {
     serial_write(welcome, sizeof(welcome));
     segments_install_gdt();
 }
-

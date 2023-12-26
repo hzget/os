@@ -16,14 +16,15 @@
  * 0 - Long mode
  * 1 - Size (0 for 16-bit, 1 for 32)
  * 1 - Granularity (0 for 1B - 1MB, 1 for 4KB - 4GB)
-*/
+ */
 #define FLAGS_PART 0x0C
 
 static struct GDTDescriptor gdt_descriptors[DESCRIPTORS_COUNT];
 
-static void segments_init_descriptor(int index,
-        unsigned int base_address, unsigned int limit,
-        unsigned char access_byte, unsigned char flags) {
+static void segments_init_descriptor(int index, unsigned int base_address,
+                                     unsigned int limit,
+                                     unsigned char access_byte,
+                                     unsigned char flags) {
 
     gdt_descriptors[index].base_low = base_address & 0xFFFF;
     gdt_descriptors[index].base_middle = (base_address >> 16) & 0xFF;
