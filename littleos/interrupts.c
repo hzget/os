@@ -41,18 +41,33 @@ struct stack_state {
     unsigned int eflags;
 } __attribute__((packed));
 
+static void keyboard_interrupt_handler() {
+    char key = read_keyboard_char();
+    char buffer[1];
+    buffer[0] = key;
+    fb_write(buffer, sizeof(buffer));
+}
+
+/** interrupt_handler
+ *  Handles interrupts.
+ *
+ *  @param cpu_state cpu registers that were saved in the stack
+ *                   when an interrupt occurs
+ *  @param interrupt num of this interrupt
+ *  @param stack_state stack info that were saved in the stack
+ *                   when an interrupt occurs
+ */
 void interrupt_handler(__attribute__((unused)) struct cpu_state,
                        unsigned int interrupt,
                        __attribute__((unused)) struct stack_state) {
-    if (interrupt == KEYBOARD_INTERRUPT) {
-        char key = read_keyboard_char();
-        char buffer[1];
-        buffer[0] = key;
-        fb_write(buffer, sizeof(buffer));
+    switch (interrupt) {
+    case KEYBOARD_INTERRUPT:
+        keyboard_interrupt_handler();
         pic_acknowledge(interrupt);
-    } else {
+        break;
+    default:
         pic_acknowledge(interrupt);
-        //__asm__ volatile("cli; hlt"); // Completely hangs the computer
+        break;
     }
 }
 
@@ -82,11 +97,14 @@ extern void *isr_stub_table[];
  */
 void interrupts_install_idt() {
 
-    pic_reinitialize();
-
-    idt_set_descriptor(KEYBOARD_INTERRUPT, isr_stub_33, 0x8E);
+    int i;
+    for (i = 0; i < 35; i++) {
+        idt_set_descriptor(i, isr_stub_table[i], 0x8E);
+    }
 
     idtr.base = (unsigned int)&idt[0];
     idtr.limit = (unsigned short)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
     __asm__ volatile("lidt %0" : : "m"(idtr)); // load the new IDT
+
+    pic_reinitialize();
 }
