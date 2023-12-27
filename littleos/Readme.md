@@ -19,6 +19,7 @@ structure
 to write to framebuffer  
 [serial.h](./serial.h) an serial driver to write to a serial port  
 [segments.h](./segments.h), [gdt.s](./gdt.s) install a new gdt  
+[interrupts.h](./interrupts.h), [pic.h](./pic.h) install a new idt
 
 drivers
 -------
