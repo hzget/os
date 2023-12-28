@@ -36,12 +36,12 @@ static void io_wait(void) { outb(0x80, 0); }
  *  For code examples, see below.
  *
  *  Default:
- *    master pic IRQ 0 to 7  -----> cpu interrupt 0x08 to 0x0F (offset 0x08)
- *    slave  pic IRQ 8 to 15 -----> cpu interrupt 0x70 to 0x77 (offset 0x70)
+ *    - master pic IRQ 0 to 7  -----> cpu interrupt 0x08 to 0x0F (offset 0x08)
+ *    - slave  pic IRQ 8 to 15 -----> cpu interrupt 0x70 to 0x77 (offset 0x70)
  *
  *  Remap:
- *    master pic IRQ 0 to 7  -----> cpu interrupt 0x20 to 0x27 (offset 0x20)
- *    slave  pic IRQ 8 to 15 -----> cpu interrupt 0x28 to 0x2F (offset 0x28)
+ *    - master pic IRQ 0 to 7  -----> cpu interrupt 0x20 to 0x27 (offset 0x20)
+ *    - slave  pic IRQ 8 to 15 -----> cpu interrupt 0x28 to 0x2F (offset 0x28)
  *
  *  @param offset1 cpu interrupt vector offset for master pic IRQ
  *  @param offset2 cpu interrupt vector offset for slave  pic IRQ
