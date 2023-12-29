@@ -24,11 +24,7 @@
     loader:                         ; the loader label (defined as entry point in linker script)
         mov eax, 0xCAFEBABE         ; place the number 0xCAFEBABE in the register eax
 
-	add esp, 4
-        push ebx
-
-; used for debugging
-	xchg bx, bx
+	xchg bx, bx                 ; used for bochs breakpoint
         call kmain	
     .loop:
         jmp .loop                   ; loop forever
