@@ -1,4 +1,5 @@
 /** @file */
+#include "constants.h"
 #include "io.h"
 
 /* The I/O ports */
@@ -12,7 +13,7 @@
 #define FB_GREEN 2
 #define FB_DARK_GREY 8
 
-#define FRAMEBUFFER_ADDRESS 0x000B8000
+#define FRAMEBUFFER_ADDRESS (0x000B8000 + KERNEL_START_VADDR)
 
 static unsigned short __fb_present_pos = 0x0;
 

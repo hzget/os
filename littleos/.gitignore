@@ -4,3 +4,4 @@ bx_enh_dbg.ini
 html
 latex
 Doxyfile
+constants.inc

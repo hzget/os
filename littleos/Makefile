@@ -5,6 +5,7 @@ CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
 LDFLAGS = -T link.ld -melf_i386
 AS = nasm
 ASFLAGS = -f elf
+AS_HEADERS = constants.inc
 
 all: kernel.elf
 
@@ -38,6 +39,7 @@ qemugdb: os.iso
 	$(CC) $(CFLAGS)  $< -o $@
 
 %.o: %.s
+	./c_to_nasm.sh $(AS_HEADERS)
 	$(AS) $(ASFLAGS) $< -o $@
 
 clean:
