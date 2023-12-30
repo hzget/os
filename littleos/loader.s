@@ -76,7 +76,7 @@ enable_paging:
     mov cr4, ecx
 
     mov	ecx, cr0
-    or  ecx, 0x80000000	    ; set the paging (PG) and protection (PE) bits
+    or  ecx, 0x80000001	    ; set the paging (PG) and protection (PE) bits
     mov cr0, ecx
 
     lea ecx, [higher_half]
