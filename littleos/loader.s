@@ -67,6 +67,9 @@ set_up_kernel_pt:
     cmp ecx, kernel_physical_end
     jle .loop_pt
 
+; assembly code executing at around 0x00100000
+; enable paging for both actual location of kernel
+; and its higher-half virtual location
 enable_paging:
     mov ecx, (kernel_pdt - KERNEL_START_VADDR)
     mov cr3, ecx            ; load pdt
@@ -79,14 +82,23 @@ enable_paging:
     or  ecx, 0x80000001	    ; set the paging (PG) and protection (PE) bits
     mov cr0, ecx
 
+    ; an jump can be done to a label to make
+    ; eip point to a virtual address in the higher half
+    ; assembly code will execute there
     lea ecx, [higher_half]
-    jmp ecx                 ; now we jump into 0xC0100000
+    jmp ecx
 
-; code executing from here on uses the page table, and is accessed through
-; the upper half, 0xC0100000
 higher_half:
+    ; code here executes in the higher half kernel
+    ; eip is larger than 0xC0000000
+    ; can continue kernel initialisation, calling C code, etc.
+
+remove_identity_mapping:
+    ; The entry mapping of the first 4 MB of virtual memory
+    ; to the first 4 MB of physical memory can be removed now
     mov [kernel_pdt], DWORD 0
     invlpg [0]
+
     ; point esp to the start of the stack (end of memory area)
     mov esp, kernel_stack+KERNEL_STACK_SIZE
 
