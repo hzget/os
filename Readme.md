@@ -14,6 +14,18 @@ What's the difference from other tutorials of OS ?
 
 Besides, it just log my os learning tour.
 
+Versions
+--------
+
+v1.0.0-alpha
+
+ * bare - can run first kernel function
+ * littleos - gdt, idt, framebuffer, serial
+
+latest
+
+ * littleos - support paging
+
 Structure
 ---------
 
@@ -48,6 +60,6 @@ too much with samples and code excerpts.
 It foucs on writing kernel and drivers. It just uses grub as
 the bootloader.
 
-Our repo will complete the code in this book.
+Our repo [littleos](./littleos) will complete the code in this book.
 
 [littleosbook]: https://littleosbook.github.io/
