@@ -43,6 +43,10 @@ struct stack_state {
 
 static void keyboard_interrupt_handler() {
     char key = read_keyboard_char();
+    if (key == 0x0) {
+        // ignore non-printable char
+        return;
+    }
     char buffer[1];
     buffer[0] = key;
     fb_write(buffer, sizeof(buffer));

@@ -47,5 +47,9 @@ static char kbd_US[128] = {
  */
 char read_keyboard_char(void) {
     unsigned char code = read_scan_code();
+    if (code & 0x80) {
+        // ignore key release event
+        return 0;
+    }
     return kbd_US[code];
 }

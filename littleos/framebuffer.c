@@ -15,7 +15,12 @@
 
 #define FRAMEBUFFER_ADDRESS (0x000B8000 + KERNEL_START_VADDR)
 
+/* Some screen stuff. */
+#define COLUMNS 80
+#define LINES 24
+
 static unsigned short __fb_present_pos = 0x0;
+static void putchar(char c);
 
 /** fb_write_cell:
  *  Writes a character with the given foreground and background to position i
@@ -56,9 +61,26 @@ static void fb_move_cursor(unsigned short pos) {
 int fb_write(char *buf, unsigned int len) {
     unsigned int i;
     for (i = 0; i < len; i++) {
-        /* Write character at position i */
-        fb_write_cell(2 * __fb_present_pos, buf[i], FB_GREEN, FB_DARK_GREY);
-        fb_move_cursor(__fb_present_pos + 1);
+        putchar(buf[i]);
     }
     return len;
+}
+
+static void newline() {
+    unsigned short y;
+    y = __fb_present_pos / COLUMNS;
+    y++;
+    if (y >= LINES) {
+        y = 0;
+    }
+    fb_move_cursor(y * COLUMNS);
+}
+
+static void putchar(char c) {
+    if (c == '\n' || c == '\r') {
+        newline();
+    } else {
+        fb_write_cell(2 * __fb_present_pos, c, FB_GREEN, FB_DARK_GREY);
+        fb_move_cursor(__fb_present_pos + 1);
+    }
 }
