@@ -1,6 +1,6 @@
 /** @file */
-#ifndef INCLUDE_SEGMENTS
-#define INCLUDE_SEGMENTS
+#ifndef SEGMENTS_H
+#define SEGMENTS_H
 
 /** segments_install_gdt:
  *  create a global descriptor table (GDT) containing
@@ -32,4 +32,4 @@ struct GDTDescriptor {
 // Wrappers around ASM.
 void segments_load_gdt(struct GDT gdt);
 void segments_load_registers();
-#endif /* INCLUDE_MEMORY_SEGMENTS */
+#endif /* SEGMENTS_H */

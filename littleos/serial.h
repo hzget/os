@@ -1,5 +1,8 @@
 /** @file */
 
+#ifndef SERIAL_H
+#define SERIAL_H
+
 /** serial_write:
  *
  *  Write a buffer of bytes to serial com1
@@ -9,3 +12,5 @@
  *  @return len length that has been written
  */
 int serial_write(char *buf, unsigned int len);
+
+#endif /* SERIAL_H */

@@ -1,5 +1,8 @@
 /** @file */
 
+#ifndef PIC_H
+#define PIC_H
+
 #define PIC_1 0x20 /* IO base address for master PIC */
 #define PIC_2 0xA0 /* IO base address for slave PIC */
 #define PIC_1_COMMAND PIC_1
@@ -46,3 +49,5 @@ void pic_acknowledge(unsigned int interrupt);
  *    - Gives additional information about the environment. (ICW4)
  */
 void pic_reinitialize();
+
+#endif /* PIC_H */
