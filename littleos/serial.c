@@ -1,5 +1,6 @@
 /** @file */
 #include "io.h"
+#include "stdio.h"
 
 /* The I/O ports */
 
@@ -92,6 +93,7 @@ static int serial_is_transmit_fifo_empty(unsigned int com) {
 static int __serial_init_done = 0;
 
 static void serial_init() {
+    printf("serial port initialised\n");
     serial_configure_baud_rate(SERIAL_COM1_BASE, 1);
     serial_configure_line(SERIAL_COM1_BASE);
     serial_configure_fifo_buffer(SERIAL_COM1_BASE);

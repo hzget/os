@@ -1,5 +1,6 @@
 /** @file */
 #include "segments.h"
+#include "stdio.h"
 
 #define DESCRIPTORS_COUNT 3
 
@@ -60,4 +61,5 @@ void segments_install_gdt() {
 
     segments_load_gdt(gdt);
     segments_load_registers();
+    printf("gdt installed\n");
 }

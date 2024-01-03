@@ -26,6 +26,7 @@ void printf(char *s, ...) {
             uival = va_arg(ap, uint32_t);
             fb_put_ui(uival);
             break;
+        case 'x':
         case 'X':
             uival = va_arg(ap, uint32_t);
             fb_put_ui_hex(uival);

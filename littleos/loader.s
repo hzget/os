@@ -2,6 +2,7 @@
 %include "constants.inc"
 
 global loader                   ; the entry symbol for ELF
+global grub_multiboot_info
 extern kmain
 extern kernel_physical_end
 
@@ -31,6 +32,11 @@ kernel_pdt:
     dd KERNEL_PDT_ID_MAP
     times 1023 dd 0
 
+section .data
+align 4
+grub_multiboot_info:
+    dd 0
+
 section .bss
 align 4
 kernel_stack:
@@ -44,6 +50,8 @@ align 4
 
 ; the entry point, called by GRUB
 loader:
+    mov ecx, (grub_multiboot_info - KERNEL_START_VADDR)
+    mov [ecx], ebx
 
 ; set up kernel_pdt to point to kernel_pt (both physical addresses)
 ; index of pdt is just the highest 10bits of the virtual address

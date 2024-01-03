@@ -3,6 +3,7 @@
 #include "framebuffer.h"
 #include "keyboard.h"
 #include "pic.h"
+#include "stdio.h"
 
 typedef struct {
     unsigned short isr_low;   // The lower 16 bits of the ISR's address
@@ -112,4 +113,5 @@ void interrupts_install_idt() {
     __asm__ volatile("lidt %0" : : "m"(idtr)); // load the new IDT
 
     pic_reinitialize();
+    printf("idt is installed\n");
 }

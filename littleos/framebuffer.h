@@ -22,7 +22,9 @@
  */
 int fb_write(const char *buf, uint32_t len);
 
+void fb_clear();
 void fb_move_cursor(uint16_t row, uint16_t col);
+
 void fb_put_b(uint8_t b);
 void fb_put_s(const char *s);
 void fb_put_ui(uint32_t i);
