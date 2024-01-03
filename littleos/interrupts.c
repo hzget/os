@@ -47,8 +47,9 @@ static void keyboard_interrupt_handler() {
         // ignore non-printable char
         return;
     }
-    char buffer[1];
+    char buffer[2];
     buffer[0] = key;
+    buffer[1] = '\0';
     fb_write(buffer, sizeof(buffer));
 }
 
