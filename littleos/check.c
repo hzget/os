@@ -4,12 +4,27 @@
 #include "stdio.h"
 
 extern uint32_t grub_multiboot_info;
+extern uint32_t kernel_physical_start;
+extern uint32_t kernel_physical_end;
+extern uint32_t kernel_virtual_start;
+extern uint32_t kernel_virtual_end;
 
 static multiboot_info_t *mbi;
 
 static void mbi_check_overview();
 static void mbi_check_mmap();
 static void mbi_check_init();
+
+void kernel_check() {
+    uint32_t _pstart = (uint32_t)&kernel_physical_start;
+    uint32_t _pend = (uint32_t)&kernel_physical_end;
+    uint32_t _vstart = (uint32_t)&kernel_virtual_start;
+    uint32_t _vend = (uint32_t)&kernel_virtual_end;
+    printf("Kernel Address:\n"
+           "physical addr %x ~ %x, size %x\n"
+           "virtual  addr %x ~ %x, size %x\n", _pstart, _pend,
+           _pend - _pstart, _vstart, _vend, _vend - _vstart);
+}
 
 void multiboot_check() {
     mbi_check_init();

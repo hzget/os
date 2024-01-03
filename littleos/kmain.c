@@ -14,6 +14,7 @@ void kmain() {
     fb_clear();
     printf("Hello %s\n", welcome);
     multiboot_check();
+    kernel_check();
     serial_write(welcome, sizeof(welcome));
     segments_install_gdt();
     interrupts_install_idt();
