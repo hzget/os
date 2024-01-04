@@ -1,6 +1,8 @@
 /** @file */
 
+#include "interrupts.h"
 #include "io.h"
+#include "stdio.h"
 
 #define KBD_DATA_PORT 0x60
 
@@ -9,7 +11,7 @@
  *
  *  @return The scan code (NOT an ASCII character!)
  */
-unsigned char read_scan_code(void) { return inb(KBD_DATA_PORT); }
+static unsigned char read_scan_code(void) { return inb(KBD_DATA_PORT); }
 
 static char kbd_US[128] = {
     0,   27,   '1', '2',  '3',  '4',  '5',  '6', '7',
@@ -45,7 +47,7 @@ static char kbd_US[128] = {
  *
  *  @return The an ASCII character from the keyboard
  */
-char read_keyboard_char(void) {
+static char read_keyboard_char(void) {
     unsigned char code = read_scan_code();
     if (code & 0x80) {
         // ignore key release event
@@ -53,3 +55,19 @@ char read_keyboard_char(void) {
     }
     return kbd_US[code];
 }
+
+static void kb_handler(struct cpu_state, unsigned int interrupt,
+                       struct stack_state) {
+    (void)interrupt;
+    char key = read_keyboard_char();
+    if (key == 0x0) {
+        // ignore non-printable char
+        return;
+    }
+    char buffer[2];
+    buffer[0] = key;
+    buffer[1] = '\0';
+    printf(buffer);
+}
+
+void keyboard_init() { register_interrupt_handler(IRQ1, kb_handler); }

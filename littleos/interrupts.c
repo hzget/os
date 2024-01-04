@@ -1,57 +1,32 @@
 /** @file */
 #include "interrupts.h"
-#include "framebuffer.h"
 #include "keyboard.h"
 #include "pic.h"
 #include "stdio.h"
 
 typedef struct {
-    unsigned short isr_low;   // The lower 16 bits of the ISR's address
-    unsigned short kernel_cs; // The GDT segment selector that the CPU will load
-                              // into CS before calling the ISR
-    unsigned char reserved;   // Set to zero
-    unsigned char attributes; // Type and attributes; see the IDT page
-    unsigned short isr_high;  // The higher 16 bits of the ISR's address
+    uint16_t isr_low;   // The lower 16 bits of the ISR's address
+    uint16_t kernel_cs; // The GDT segment selector that the CPU will load
+                        // into CS before calling the ISR
+    uint8_t reserved;   // Set to zero
+    uint8_t attributes; // Type and attributes; see the IDT page
+    uint16_t isr_high;  // The higher 16 bits of the ISR's address
 } __attribute__((packed)) idt_entry_t;
 
 // Create an array of IDT entries; aligned for performance
 __attribute__((aligned(0x10))) static idt_entry_t idt[256];
 
 typedef struct {
-    unsigned short limit;
-    unsigned int base;
+    uint16_t limit;
+    uint32_t base;
 } __attribute__((packed)) idtr_t;
 
 static idtr_t idtr;
 
-struct cpu_state {
-    unsigned int eax;
-    unsigned int ebx;
-    unsigned int ecx;
-    unsigned int edx;
-    unsigned int esp;
-    unsigned int ebp;
-    unsigned int esi;
-    unsigned int edi;
-} __attribute__((packed));
+isr_t interrupt_handlers[256];
 
-struct stack_state {
-    unsigned int error_code;
-    unsigned int eip;
-    unsigned int cs;
-    unsigned int eflags;
-} __attribute__((packed));
-
-static void keyboard_interrupt_handler() {
-    char key = read_keyboard_char();
-    if (key == 0x0) {
-        // ignore non-printable char
-        return;
-    }
-    char buffer[2];
-    buffer[0] = key;
-    buffer[1] = '\0';
-    fb_write(buffer, sizeof(buffer));
+void register_interrupt_handler(uint8_t n, isr_t handler) {
+    interrupt_handlers[n] = handler;
 }
 
 /** interrupt_handler
@@ -63,29 +38,23 @@ static void keyboard_interrupt_handler() {
  *  @param stack_state stack info that were saved in the stack
  *                   when an interrupt occurs
  */
-void interrupt_handler(__attribute__((unused)) struct cpu_state,
-                       unsigned int interrupt,
-                       __attribute__((unused)) struct stack_state) {
-    switch (interrupt) {
-    case KEYBOARD_INTERRUPT:
-        keyboard_interrupt_handler();
-        pic_acknowledge(interrupt);
-        break;
-    default:
-        pic_acknowledge(interrupt);
-        break;
+void interrupt_handler(struct cpu_state cpu, uint32_t interrupt,
+                       struct stack_state stack) {
+    isr_t handler = interrupt_handlers[interrupt];
+    if (handler) {
+        handler(cpu, interrupt, stack);
     }
+    pic_acknowledge(interrupt);
 }
 
-static void idt_set_descriptor(unsigned char vector, void *isr,
-                               unsigned char flags) {
+static void idt_set_descriptor(uint8_t vector, void *isr, uint8_t flags) {
     idt_entry_t *descriptor = &idt[vector];
 
-    descriptor->isr_low = (unsigned int)isr & 0xFFFF;
+    descriptor->isr_low = (uint32_t)isr & 0xFFFF;
     descriptor->kernel_cs = 0x08; // this value can be whatever offset your
                                   // kernel code selector is in your GDT
     descriptor->attributes = flags;
-    descriptor->isr_high = (unsigned int)isr >> 16;
+    descriptor->isr_high = (uint32_t)isr >> 16;
     descriptor->reserved = 0;
 }
 
@@ -108,8 +77,8 @@ void interrupts_install_idt() {
         idt_set_descriptor(i, isr_stub_table[i], 0x8E);
     }
 
-    idtr.base = (unsigned int)&idt[0];
-    idtr.limit = (unsigned short)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
+    idtr.base = (uint32_t)&idt[0];
+    idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
     __asm__ volatile("lidt %0" : : "m"(idtr)); // load the new IDT
 
     pic_reinitialize();

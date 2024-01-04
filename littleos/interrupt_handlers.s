@@ -57,8 +57,8 @@ isr_no_err_stub 28
 isr_no_err_stub 29
 isr_err_stub    30
 isr_no_err_stub 31
-isr_no_err_stub 32
-isr_no_err_stub 33
+isr_no_err_stub 32 ; IRQ0
+isr_no_err_stub 33 ; IRQ1 - keyboard
 
 global isr_stub_table
 isr_stub_table:
