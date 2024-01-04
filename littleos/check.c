@@ -22,8 +22,8 @@ void kernel_check() {
     uint32_t _vend = (uint32_t)&kernel_virtual_end;
     printf("Kernel Address:\n"
            "physical addr %x ~ %x, size %x\n"
-           "virtual  addr %x ~ %x, size %x\n", _pstart, _pend,
-           _pend - _pstart, _vstart, _vend, _vend - _vstart);
+           "virtual  addr %x ~ %x, size %x\n",
+           _pstart, _pend, _pend - _pstart, _vstart, _vend, _vend - _vstart);
 }
 
 void multiboot_check() {

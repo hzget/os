@@ -14,4 +14,11 @@
  */
 void printf(char *fmt, ...);
 
+#define PANIC(msg)                                                             \
+    do {                                                                       \
+        printf(msg);                                                           \
+        for (;;) {                                                             \
+        }                                                                      \
+    } while (1)
+
 #endif /* STDIO_H */

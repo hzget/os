@@ -4,6 +4,7 @@
 #include "constants.h"
 #include "framebuffer.h"
 #include "interrupts.h"
+#include "paging.h"
 #include "segments.h"
 #include "serial.h"
 #include "stdio.h"
@@ -18,4 +19,5 @@ void kmain() {
     serial_write(welcome, sizeof(welcome));
     segments_install_gdt();
     interrupts_install_idt();
+    initialise_paging();
 }

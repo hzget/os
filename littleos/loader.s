@@ -72,7 +72,8 @@ set_up_kernel_pt:
     mov [eax], ecx
     add eax, 4
     add ecx, PAGE_FRAME_SIZE
-    cmp ecx, kernel_physical_end
+    ;cmp ecx, kernel_physical_end
+    cmp ecx, 0x002E0000
     jle .loop_pt
 
 ; assembly code executing at around 0x00100000
