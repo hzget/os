@@ -1,6 +1,7 @@
 #include "paging.h"
 #include "common.h"
 #include "constants.h"
+#include "interrupts.h"
 #include "kheap.h"
 #include "stdio.h"
 
@@ -9,6 +10,8 @@ static uint32_t *frames;
 static uint32_t nframes;
 
 static page_directory_t *kernel_directory;
+static void page_fault(struct cpu_state, unsigned int,
+                       struct stack_state stack);
 
 // Defined in kheap.c
 extern uint32_t g_placement_address;
@@ -134,6 +137,8 @@ void initialise_paging() {
         i += 0x1000;
     }
 
+    register_interrupt_handler(E_Page_Fault, page_fault);
+
     print_bitmap();
 
     uint32_t addr =
@@ -157,4 +162,37 @@ page_t *get_page(uint32_t address, int make, page_directory_t *dir) {
     } else {
         return 0;
     }
+}
+
+static void page_fault(struct cpu_state, unsigned int,
+                       struct stack_state stack) {
+    // A page fault has occurred.
+    // The faulting address is stored in the CR2 register.
+    uint32_t faulting_address;
+    __asm__ volatile("mov %%cr2, %0" : "=r"(faulting_address));
+
+    uint32_t ecode = stack.error_code;
+    // The error code gives us details of what happened.
+    int present = !(ecode & 0x1); // Page not present
+    int rw = ecode & 0x2;         // Write operation?
+    int us = ecode & 0x4;         // Processor was in user-mode?
+    int reserved = ecode & 0x8; // Overwritten CPU-reserved bits of page entry?
+    //   int id = ecode & 0x10;          // Caused by an instruction fetch?
+
+    // Output an error message.
+    printf("Page fault! ( ");
+    if (present) {
+        printf("present ");
+    }
+    if (rw) {
+        printf("read-only ");
+    }
+    if (us) {
+        printf("user-mode ");
+    }
+    if (reserved) {
+        printf("reserved ");
+    }
+    printf(") at 0x%x\n", faulting_address);
+    PANIC("Page fault");
 }

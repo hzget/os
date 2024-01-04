@@ -22,4 +22,5 @@ void kmain() {
     keyboard_init();
     interrupts_install_idt();
     initialise_paging();
+    // page_fault_check();
 }

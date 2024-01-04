@@ -6,6 +6,10 @@
 #include "pic.h"
 #include "stdint.h"
 
+// Exceptions: https://wiki.osdev.org/Exceptions
+#define E_Page_Fault 14
+
+// IRQ: https://wiki.osdev.org/Interrupts#Standard_ISA_IRQs
 #define IRQ0 PIC_1_START_INTERRUPT
 #define IRQ1 IRQ0 + 1 // keyboard
 #define IRQ2 IRQ0 + 2

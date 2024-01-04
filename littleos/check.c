@@ -15,6 +15,16 @@ static void mbi_check_overview();
 static void mbi_check_mmap();
 static void mbi_check_init();
 
+void page_fault_check() {
+    // normal
+    uint32_t *ptr = (uint32_t *)0xC0100000;
+    printf("[%x] is %x\n", ptr, *ptr);
+
+    // fault
+    ptr = (uint32_t *)0x001E0000;
+    printf("[%x] is %x\n", ptr, *ptr);
+}
+
 void kernel_check() {
     uint32_t _pstart = (uint32_t)&kernel_physical_start;
     uint32_t _pend = (uint32_t)&kernel_physical_end;

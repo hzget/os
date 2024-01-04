@@ -16,6 +16,7 @@ void printf(char *fmt, ...);
 
 #define PANIC(msg)                                                             \
     do {                                                                       \
+        printf("PANIC at %s()!! ", __func__);                                  \
         printf(msg);                                                           \
         for (;;) {                                                             \
         }                                                                      \
