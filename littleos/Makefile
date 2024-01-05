@@ -8,7 +8,7 @@ AS = nasm
 ASFLAGS = -f elf
 AS_HEADERS = constants.inc
 
-all: kernel.elf
+all: kernel.elf build_apps
 
 kernel.elf: $(OBJECTS)
 	ld $(LDFLAGS) $(OBJECTS) -o kernel.elf
@@ -25,6 +25,12 @@ os.iso: kernel.elf
                     -boot-info-table                \
                     -o os.iso                       \
                     iso
+
+build_apps:
+	@echo '-> Building applications'
+	@make --no-print-directory -C apps
+	@echo '!!! user needs to copy apps to iso/modules/ manually'
+	@echo ''
 
 bochs: os.iso
 	bochs -q
@@ -44,5 +50,8 @@ qemugdb: os.iso
 	$(AS) $(ASFLAGS) $< -o $@
 
 clean:
+	@echo '-> Cleaning apps'
+	@make --no-print-directory -C apps clean
+	@echo ''
 	rm -rf *.o kernel.elf os.iso *.out
 

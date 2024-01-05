@@ -21,7 +21,7 @@ void run_apps() {
     static multiboot_info_t *mbi;
     mbi = (multiboot_info_t *)(grub_multiboot_info + KERNEL_START_VADDR);
     if (!(mbi->flags & MULTIBOOT_INFO_MODS)) {
-        printf("no apps to run");
+        printf("no apps to run\n");
         return;
     }
 
