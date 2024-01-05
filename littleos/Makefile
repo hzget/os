@@ -8,12 +8,15 @@ AS = nasm
 ASFLAGS = -f elf
 AS_HEADERS = constants.inc
 
-all: kernel.elf build_apps
+BIN_PATH = iso/modules/
+APPS = main
+
+all: os.iso
 
 kernel.elf: $(OBJECTS)
 	ld $(LDFLAGS) $(OBJECTS) -o kernel.elf
 
-os.iso: kernel.elf
+os.iso: kernel.elf create_bin_folder
 	cp kernel.elf iso/boot/kernel.elf
 	genisoimage -R                              \
                     -b boot/grub/stage2_eltorito    \
@@ -26,10 +29,15 @@ os.iso: kernel.elf
                     -o os.iso                       \
                     iso
 
+create_bin_folder: build_apps
+	@echo '-> Copying applications to bin folder'
+	if ! [ -d $(BIN_PATH) ]; then mkdir -p $(BIN_PATH); fi
+	for app in $(APPS); do cp apps/$$app $(BIN_PATH); done
+	@echo ''
+
 build_apps:
 	@echo '-> Building applications'
 	@make --no-print-directory -C apps
-	@echo '!!! user needs to copy apps to iso/modules/ manually'
 	@echo ''
 
 bochs: os.iso
@@ -53,5 +61,7 @@ clean:
 	@echo '-> Cleaning apps'
 	@make --no-print-directory -C apps clean
 	@echo ''
+	@echo '-> Cleaning bin'
+	if [ -d $(BIN_PATH) ]; then rm $(BIN_PATH) -rf; fi
 	rm -rf *.o kernel.elf os.iso *.out
 
