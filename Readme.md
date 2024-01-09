@@ -32,6 +32,8 @@ Structure
 * [bare](./bare): code on "bared" board before running an os
 * [littleos](./littleos): relating to kernel & drivers
 in [Little OS Book][littleosbook]
+* [james_os](./james_os): an implementation of
+[JamesM's kernel development tutorials][tutorial]
 
 Before Running An OS
 --------------------
@@ -63,3 +65,4 @@ the bootloader.
 Our repo [littleos](./littleos) will complete the code in this book.
 
 [littleosbook]: https://littleosbook.github.io/
+[tutorial]: http://www.jamesmolloy.co.uk/tutorial_html/
