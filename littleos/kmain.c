@@ -5,11 +5,11 @@
 #include "framebuffer.h"
 #include "interrupts.h"
 #include "keyboard.h"
+#include "module.h"
 #include "paging.h"
 #include "segments.h"
 #include "serial.h"
 #include "stdio.h"
-#include "module.h"
 
 char welcome[] = "Little OS";
 
@@ -18,11 +18,11 @@ void kmain() {
     printf("Hello %s\n", welcome);
     multiboot_check();
     kernel_check();
-    run_apps();
     serial_write(welcome, sizeof(welcome));
     segments_install_gdt();
     keyboard_init();
     interrupts_install_idt();
-    initialise_paging();
+    page_init();
     // page_fault_check();
+    run_apps();
 }
