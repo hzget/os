@@ -4,31 +4,31 @@
 #include "common.h"
 
 // Write a byte out to the specified port.
-void outb(u16int port, u8int value) {
+void outb(uint16_t port, uint8_t value) {
     asm volatile("outb %1, %0" : : "dN"(port), "a"(value));
 }
 
-u8int inb(u16int port) {
-    u8int ret;
+uint8_t inb(uint16_t port) {
+    uint8_t ret;
     asm volatile("inb %1, %0" : "=a"(ret) : "dN"(port));
     return ret;
 }
 
-u16int inw(u16int port) {
-    u16int ret;
+uint16_t inw(uint16_t port) {
+    uint16_t ret;
     asm volatile("inw %1, %0" : "=a"(ret) : "dN"(port));
     return ret;
 }
 
 // Copy len bytes from src to dest.
-void memcpy(u8int *dest, const u8int *src, u32int len) {
+void memcpy(uint8_t *dest, const uint8_t *src, uint32_t len) {
     for (; len > 0; len--) {
         *(dest++) = *(src++);
     }
 }
 
 // Write len copies of val into dest.
-void memset(u8int *dest, u8int val, u32int len) {
+void memset(uint8_t *dest, uint8_t val, uint32_t len) {
     for (; len > 0; len--) {
         *(dest++) = val;
     }
@@ -49,7 +49,7 @@ int strcmp(char *str1, char *str2) {
     }
 }
 
-u32int strlen(char *str) {
+uint32_t strlen(const char *str) {
     int n = 0;
     while (*str != '\0') {
         n++;
@@ -64,15 +64,12 @@ char *strcpy(char *dest, const char *src) {
     while (*src != '\0') {
         *(dest++) = *(src++);
     }
+    *dest = '\0';
     return rt;
 }
 
 // Concatenate the NULL-terminated string src onto
 // the end of dest, and return dest.
 char *strcat(char *dest, const char *src) {
-    // TODO: implement this yourself!
-    char *rt = dest;
-    u32int n = strlen(dest);
-    strcpy(dest + n, src);
-    return rt;
+    return strcpy(dest + strlen(dest), src);
 }
