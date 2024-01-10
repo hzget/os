@@ -32,7 +32,7 @@ Structure
 * [bare](./bare): code on "bared" board before running an os
 * [littleos](./littleos): relating to kernel & drivers
 in [Little OS Book][littleosbook]
-* [james_os](./james_os): an implementation of
+* [jamesm_os](./jamesm_os): an implementation of
 [JamesM's kernel development tutorials][tutorial]
 
 Before Running An OS
