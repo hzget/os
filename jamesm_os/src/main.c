@@ -3,12 +3,15 @@
 //           Made for JamesM's tutorials <www.jamesmolloy.co.uk>
 
 #include "monitor.h"
+#include "stdio.h"
+
+char msg[] = "welcome to os world!";
 
 int main() {
     // Initialise the screen (by clearing it)
     monitor_clear();
     // Write out a sample string
-    monitor_write("Hello, world!");
+    printf("%s\n", msg);
 
     return 0;
 }
