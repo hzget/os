@@ -20,8 +20,9 @@ static void itoa(char *buf, int base, int d) {
         *p++ = '-';
         buf++;
         ud = -d;
-    } else if (base == 'x')
+    } else if (base == 'x') {
         divisor = 16;
+    }
 
     /* Divide UD by DIVISOR until UD == 0. */
     do {
@@ -55,9 +56,9 @@ void printf(const char *format, ...) {
     arg++;
 
     while ((c = *format++) != 0) {
-        if (c != '%')
+        if (c != '%') {
             monitor_put(c);
-        else {
+        } else {
             char *p, *p2;
             int pad0 = 0, pad = 0;
 
@@ -83,16 +84,20 @@ void printf(const char *format, ...) {
 
             case 's':
                 p = *arg++;
-                if (!p)
+                if (!p) {
                     p = "(null)";
+                }
 
             string:
-                for (p2 = p; *p2; p2++)
+                for (p2 = p; *p2; p2++) {
                     ;
-                for (; p2 < p + pad; p2++)
+                }
+                for (; p2 < p + pad; p2++) {
                     monitor_put(pad0 ? '0' : ' ');
-                while (*p)
+                }
+                while (*p) {
                     monitor_put(*p++);
+                }
                 break;
 
             default:

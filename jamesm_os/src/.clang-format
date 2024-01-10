@@ -2,4 +2,7 @@
 # We'll use defaults from the LLVM style, but with 4 columns indentation.
 BasedOnStyle: LLVM
 IndentWidth: 4
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+InsertBraces: true
 ---
