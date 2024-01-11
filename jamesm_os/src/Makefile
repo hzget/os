@@ -3,7 +3,7 @@
 # The only one that needs changing is the assembler 
 # rule, as we use nasm instead of GNU as.
 
-SOURCES=boot.o main.o monitor.o common.o stdio.o
+SOURCES=boot.o main.o monitor.o common.o stdio.o gdt.o interrupt.o isr.o descriptor_tables.o
 
 CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
 	-nostartfiles -nodefaultlibs -Wall -Wextra -Werror -g -c
@@ -27,3 +27,6 @@ link:
 
 %.o: %.s
 	$(AS) $(ASFLAGS) $< -o $@
+
+clang-format:
+	clang-format -i *.c *.h

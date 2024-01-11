@@ -15,6 +15,11 @@ update_image: build
 run_bochs: update_image
 	./run_bochs.sh
 
+clang-format:
+	@echo '-> clang-format src'
+	@make --no-print-directory -C src clang-format
+	@echo ''
+
 clean:
 	@echo '-> Cleaning binaries'
 	@make --no-print-directory -C src clean
