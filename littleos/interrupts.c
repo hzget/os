@@ -62,7 +62,7 @@ extern void *isr_stub_table[];
 
 #define IDT_MAX_DESCRIPTORS 256
 
-/** interrupts_install_idt:
+/** init_idt:
  *  Install interrupt descriptor table to handle interrupt.
  *
  *  It does the following work:
@@ -70,7 +70,7 @@ extern void *isr_stub_table[];
  *      - create idt
  *      - load idt
  */
-void interrupts_install_idt() {
+void init_idt() {
 
     int i;
     for (i = 0; i < 35; i++) {

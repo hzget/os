@@ -2,7 +2,7 @@
 #ifndef SEGMENTS_H
 #define SEGMENTS_H
 
-/** segments_install_gdt:
+/** init_gdt:
  *  create a global descriptor table (GDT) containing
  *  .text and .data segemnt desciptors and then
  *  update gdtr and segment registors to use the
@@ -13,7 +13,7 @@
  *    1 : code segement descriptor
  *    2 : data segement descriptor
  */
-void segments_install_gdt();
+void init_gdt();
 
 struct GDT {
     unsigned short size;

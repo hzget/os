@@ -43,6 +43,6 @@ struct stack_state {
 typedef void (*isr_t)(struct cpu_state, uint32_t interrupt, struct stack_state);
 void register_interrupt_handler(uint8_t n, isr_t handler);
 
-void interrupts_install_idt();
+void init_idt();
 
 #endif /* INTERRUPTS_H */

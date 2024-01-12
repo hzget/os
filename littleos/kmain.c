@@ -19,10 +19,10 @@ void kmain() {
     multiboot_check();
     kernel_check();
     serial_write(welcome, sizeof(welcome));
-    segments_install_gdt();
-    keyboard_init();
-    interrupts_install_idt();
-    page_init();
+    init_kb();
+    init_gdt();
+    init_idt();
+    init_paging();
     // page_fault_check();
     run_apps();
 }

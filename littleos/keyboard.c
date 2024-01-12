@@ -70,4 +70,4 @@ static void kb_handler(struct cpu_state, unsigned int interrupt,
     printf(buffer);
 }
 
-void keyboard_init() { register_interrupt_handler(IRQ1, kb_handler); }
+void init_kb() { register_interrupt_handler(IRQ1, kb_handler); }

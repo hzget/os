@@ -38,7 +38,7 @@ static void segments_init_descriptor(int index, unsigned int base_address,
     gdt_descriptors[index].access_byte = access_byte;
 }
 
-/** segments_install_gdt:
+/** init_gdt:
  *  create a global descriptor table (GDT) containing
  *  .text and .data segemnt desciptors and then
  *  update gdtr and segment registors to use the
@@ -49,7 +49,7 @@ static void segments_init_descriptor(int index, unsigned int base_address,
  *    1 : code segement descriptor
  *    2 : data segement descriptor
  */
-void segments_install_gdt() {
+void init_gdt() {
 
     struct GDT gdt;
     gdt.address = (unsigned int)gdt_descriptors;
