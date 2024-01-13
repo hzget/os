@@ -19,7 +19,9 @@ void pic_acknowledge(unsigned int interrupt) {
     outb(PIC_1_COMMAND, PIC_ACK);
 }
 
-static void io_wait(void) { outb(0x80, 0); }
+static void io_wait(void) {
+    outb(0x80, 0);
+}
 
 /** pic_remap:
  *  Remap pic irq, giving them specified vector offsets.

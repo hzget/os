@@ -7,4 +7,6 @@ uint32_t align_up(uint32_t n, uint32_t a) {
     return n - (n % a) + a;
 }
 
-uint32_t align_down(uint32_t n, uint32_t a) { return n - (n % a); }
+uint32_t align_down(uint32_t n, uint32_t a) {
+    return n - (n % a);
+}

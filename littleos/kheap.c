@@ -126,7 +126,9 @@ static size_t get_block_index(void *addr) {
     return offset / BLOCK_SIZE + 1;
 }
 
-static void clear_block_entry(size_t index) { kheap.table.entries[index] = 0; }
+static void clear_block_entry(size_t index) {
+    kheap.table.entries[index] = 0;
+}
 
 static void clear_block_memory(size_t index) {
     memset((uint8_t *)get_block_addr(index), 0, BLOCK_SIZE);

@@ -11,7 +11,9 @@
  *
  *  @return The scan code (NOT an ASCII character!)
  */
-static unsigned char read_scan_code(void) { return inb(KBD_DATA_PORT); }
+static unsigned char read_scan_code(void) {
+    return inb(KBD_DATA_PORT);
+}
 
 static char kbd_US[128] = {
     0,   27,   '1', '2',  '3',  '4',  '5',  '6', '7',
@@ -70,4 +72,6 @@ static void kb_handler(struct cpu_state, unsigned int interrupt,
     printf(buffer);
 }
 
-void init_kb() { register_interrupt_handler(IRQ1, kb_handler); }
+void init_kb() {
+    register_interrupt_handler(IRQ1, kb_handler);
+}

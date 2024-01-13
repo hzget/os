@@ -5,7 +5,9 @@
 static void page_fault(struct cpu_state, unsigned int,
                        struct stack_state stack);
 
-void init_paging() { register_interrupt_handler(E_Page_Fault, page_fault); }
+void init_paging() {
+    register_interrupt_handler(E_Page_Fault, page_fault);
+}
 
 static void page_fault(struct cpu_state, unsigned int,
                        struct stack_state stack) {

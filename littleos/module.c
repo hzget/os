@@ -5,13 +5,17 @@
 
 extern uint32_t grub_multiboot_info;
 
-void create_pageframes() {}
+void create_pageframes() {
+}
 
-void create_pt() {}
+void create_pt() {
+}
 
-void copy_module_code() {}
+void copy_module_code() {
+}
 
-void user_mod_init() {}
+void user_mod_init() {
+}
 
 void run_apps() {
     static multiboot_info_t *mbi;
