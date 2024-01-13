@@ -6,5 +6,6 @@
 void multiboot_check();
 void kernel_check();
 void page_fault_check();
+void kheap_check();
 
 #endif /* CHECK_H */

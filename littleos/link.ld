@@ -27,6 +27,12 @@ SECTIONS {
         *(.bss)              /* all bss sections from all files */
     }
 
+    .kernel_heap_section : {
+        /* Reserve some bytes in the kernel_heap_section */
+        kernel_heap_virtual_address = .;
+        . = kernel_heap_virtual_address + 0x1000 * 200;
+    }
+
     kernel_virtual_end = .;
     kernel_physical_end = . - 0xC0000000;
 }

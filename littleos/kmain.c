@@ -5,6 +5,7 @@
 #include "framebuffer.h"
 #include "interrupts.h"
 #include "keyboard.h"
+#include "kheap.h"
 #include "module.h"
 #include "paging.h"
 #include "segments.h"
@@ -24,5 +25,7 @@ void kmain() {
     init_idt();
     init_paging();
     // page_fault_check();
+    init_kheap();
+    // kheap_check();
     run_apps();
 }

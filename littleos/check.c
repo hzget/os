@@ -1,4 +1,5 @@
 #include "constants.h"
+#include "kheap.h"
 #include "multiboot.h"
 #include "stdint.h"
 #include "stdio.h"
@@ -18,11 +19,30 @@ static void mbi_check_init();
 void page_fault_check() {
     // normal
     uint32_t *ptr = (uint32_t *)0xC0100000;
-    printf("[%x] is %x\n", ptr, *ptr);
+    printf("[0x%08x] is 0x%08x\n", ptr, *ptr);
 
     // fault
     ptr = (uint32_t *)0x001E0000;
-    printf("[%x] is %x\n", ptr, *ptr);
+    printf("[0x%08x] is 0x%08x\n", ptr, *ptr);
+}
+
+void kheap_check() {
+    void *ptr1 = kmalloc(4096);
+    printf("ptr1: %x\n", ptr1);
+    void *ptr2 = kmalloc(4097);
+    printf("ptr2: %x\n", ptr2);
+    kheap_print_table_entries(8);
+    void *ptr3 = kmalloc(4096);
+    printf("ptr3: %x\n", ptr3);
+    kheap_print_table_entries(8);
+    kfree(ptr2);
+    kheap_print_table_entries(8);
+    void *ptr4 = kmalloc(4096);
+    printf("ptr4: %x\n", ptr4);
+    kheap_print_table_entries(8);
+    void *ptr5 = kmalloc(4097);
+    printf("ptr5: %x\n", ptr5);
+    kheap_print_table_entries(8);
 }
 
 void kernel_check() {
@@ -31,8 +51,8 @@ void kernel_check() {
     uint32_t _vstart = (uint32_t)&kernel_virtual_start;
     uint32_t _vend = (uint32_t)&kernel_virtual_end;
     printf("Kernel Address:\n"
-           "physical addr %x ~ %x, size %x\n"
-           "virtual  addr %x ~ %x, size %x\n",
+           "physical addr 0x%08x ~ 0x%08x, size 0x%08x\n"
+           "virtual  addr 0x%08x ~ 0x%08x, size 0x%08x\n",
            _pstart, _pend, _pend - _pstart, _vstart, _vend, _vend - _vstart);
 }
 
@@ -47,7 +67,7 @@ static void mbi_check_init() {
 }
 
 static void mbi_check_overview() {
-    printf("multiboot info addr is %x, flag is %x\n", mbi, mbi->flags);
+    printf("multiboot info addr is 0x%08x, flag is 0x%08x\n", mbi, mbi->flags);
 }
 
 static void mbi_check_mmap() {
@@ -70,7 +90,7 @@ static void mbi_check_mmap() {
          *     Start Addr: 0x003E0000 | Length: 0x00020000 | Size: 20 | Type: 2
          *     Start Addr: 0xFFFC0000 | Length: 0x00040000 | Size: 20 | Type: 2
          */
-        printf("Start Addr: %x | Length: %x | Size: %u | Type: %u\n",
+        printf("Start Addr: 0x%08x | Length: 0x%08x | Size: %u | Type: %u\n",
                mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type);
 
         if (mmmt->type == MULTIBOOT_MEMORY_AVAILABLE) {

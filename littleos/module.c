@@ -27,7 +27,7 @@ void run_apps() {
     uint32_t addr = module->mod_start;
     typedef void (*call_module_t)(void);
     addr += KERNEL_START_VADDR;
-    printf("module start addr %x, size %x\n", addr, size);
+    printf("module start addr 0x%x, size 0x%x\n", addr, size);
     call_module_t start_program = (call_module_t)(addr);
     start_program();
 }

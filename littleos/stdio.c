@@ -1,45 +1,109 @@
-#include "stdio.h"
-#include "stdarg.h"
-#include "stdint.h"
 
+/*
+ * It is modified from:
+ *   https://www.gnu.org/software/grub/manual/multiboot/multiboot.html
+ *
+ */
 #include "framebuffer.h"
 
-void printf(char *s, ...) {
-    va_list ap;
-    char *p;
-    uint32_t uival;
-    char *sval;
+/* Convert the integer D to a string and save the string in BUF. If
+   BASE is equal to ’d’, interpret that D is decimal, and if BASE is
+   equal to ’x’, interpret that D is hexadecimal. */
+static void itoa(char *buf, int base, int d) {
+    char *p = buf;
+    char *p1, *p2;
+    unsigned long ud = d;
+    int divisor = 10;
 
-    va_start(ap, s);
-    for (p = s; *p != '\0'; ++p) {
-        if (*p != '%') {
-            fb_put_b(*p);
-            continue;
-        }
-
-        switch (*++p) {
-        case 'c':
-            uival = va_arg(ap, uint32_t);
-            fb_put_b((uint8_t)uival);
-            break;
-        case 'u':
-            uival = va_arg(ap, uint32_t);
-            fb_put_ui(uival);
-            break;
-        case 'x':
-        case 'X':
-            uival = va_arg(ap, uint32_t);
-            fb_put_ui_hex(uival);
-            break;
-        case 's':
-            sval = va_arg(ap, char *);
-            fb_put_s(sval);
-            break;
-        case '%':
-            fb_put_b('%');
-            break;
-        }
+    /* If %d is specified and D is minus, put ‘-’ in the head. */
+    if (base == 'd' && d < 0) {
+        *p++ = '-';
+        buf++;
+        ud = -d;
+    } else if (base == 'x') {
+        divisor = 16;
     }
 
-    va_end(ap);
+    /* Divide UD by DIVISOR until UD == 0. */
+    do {
+        int remainder = ud % divisor;
+
+        *p++ = (remainder < 10) ? remainder + '0' : remainder + 'a' - 10;
+    } while (ud /= divisor);
+
+    /* Terminate BUF. */
+    *p = 0;
+
+    /* Reverse BUF. */
+    p1 = buf;
+    p2 = p - 1;
+    while (p1 < p2) {
+        char tmp = *p1;
+        *p1 = *p2;
+        *p2 = tmp;
+        p1++;
+        p2--;
+    }
+}
+
+/* Format a string and print it on the screen, just like the libc
+   function printf. */
+void printf(const char *format, ...) {
+    char **arg = (char **)&format;
+    char c;
+    char buf[20];
+
+    arg++;
+
+    while ((c = *format++) != 0) {
+        if (c != '%') {
+            fb_put_b(c);
+        } else {
+            char *p, *p2;
+            int pad0 = 0, pad = 0;
+
+            c = *format++;
+            if (c == '0') {
+                pad0 = 1;
+                c = *format++;
+            }
+
+            if (c >= '0' && c <= '9') {
+                pad = c - '0';
+                c = *format++;
+            }
+
+            switch (c) {
+            case 'd':
+            case 'u':
+            case 'x':
+                itoa(buf, c, *((int *)arg++));
+                p = buf;
+                goto string;
+                break;
+
+            case 's':
+                p = *arg++;
+                if (!p) {
+                    p = "(null)";
+                }
+
+            string:
+                for (p2 = p; *p2; p2++) {
+                    ;
+                }
+                for (; p2 < p + pad; p2++) {
+                    fb_put_b(pad0 ? '0' : ' ');
+                }
+                while (*p) {
+                    fb_put_b(*p++);
+                }
+                break;
+
+            default:
+                fb_put_b(*((int *)arg++));
+                break;
+            }
+        }
+    }
 }

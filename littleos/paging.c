@@ -32,6 +32,6 @@ static void page_fault(struct cpu_state, unsigned int,
     if (reserved) {
         printf("reserved ");
     }
-    printf(") at 0x%x\n", faulting_address);
+    printf(") at 0x%08x\n", faulting_address);
     PANIC("Page fault");
 }

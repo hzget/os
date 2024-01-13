@@ -1,5 +1,5 @@
 OBJECTS = loader.o kmain.o framebuffer.o io.o serial.o segments.o gdt.o interrupts.o interrupt_handlers.o pic.o keyboard.o
-OBJECTS += stdio.o check.o paging.o module.o
+OBJECTS += stdio.o check.o paging.o module.o kheap.o mem.o string.o
 CC = gcc
 CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
 	-nostartfiles -nodefaultlibs -Wall -Wextra -Werror -g -c
@@ -45,10 +45,10 @@ bochs: os.iso
 
 qemu: os.iso
 #	qemu-system-x86_64 -boot d -cdrom os.iso -m 4 -monitor stdio
-	qemu-system-i386 -boot d -cdrom os.iso -m 4 -serial file:com1.qemu.out
+	qemu-system-i386 -boot d -cdrom os.iso -m 256M -serial file:com1.qemu.out
 qemugdb: os.iso
 	#qemu-system-i386 -s -S -m 32M -boot c -hda master.img
-	qemu-system-i386 -s -S -m 4 -boot d -cdrom os.iso
+	qemu-system-i386 -s -S -m 256M -boot d -cdrom os.iso
 
 %.o: %.c
 	$(CC) $(CFLAGS)  $< -o $@
@@ -64,4 +64,7 @@ clean:
 	@echo '-> Cleaning bin'
 	if [ -d $(BIN_PATH) ]; then rm $(BIN_PATH) -rf; fi
 	rm -rf *.o kernel.elf os.iso *.out
+
+clang-format:
+	clang-format -i *.c *.h
 
