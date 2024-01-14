@@ -15,14 +15,18 @@ structure
 ---------
 
 [loader.s](./loader.s) is the entrance of the kernel  
+[kmain.c](./kmain.c) contains the main function  
 [framebuffer.h](./framebuffer.h), [io.s](./io.s) an output driver
 to write to framebuffer  
 [serial.h](./serial.h) an serial driver to write to a serial port  
-[segments.h](./segments.h), [gdt.s](./gdt.s) install a new gdt  
+[segments.h](./segments.h), [gdt.s](./gdt.s) install a new
+global descriptor table  
 [interrupts.h](./interrupts.h), [pic.h](./pic.h),
 [interrupt_handlers.s](./interrupt_handlers.s),
 [keyboard.h](./keyboard.h) install a new idt to handle keyboard
 interrupt  
+[kheap.h](./kheap.h) allocate a space (a frame as unit) for use  
+[paging.h](./paging.h) create user page directory and switch pd  
 
 drivers
 -------

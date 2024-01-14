@@ -1,3 +1,5 @@
+/** @file */
+
 #include "paging.h"
 #include "constants.h"
 #include "interrupts.h"
@@ -34,14 +36,13 @@ uint32_t *create_user_pd() {
     return pd;
 }
 
-/** pd_mmap
- *  map a physical address to a virtual address in pd so that
- *  the page directory contains that page frame.
+/** pd_mmap  maps a physical address to a virtual address in pd
+ *  so that the page directory contains that page frame.
  *  It creates a page table when necessary.
  *
- *  Note: pde stores the virtual address of pt and
- *  it shall be transfer to physical address by
- *  func kernel_pdt().
+ *  Note: pde stores the virtual address of page table and
+ *  it shall be transferred to physical address by
+ *  func pde_vaddr_to_paddr().
  */
 static void pd_mmap(uint32_t *pd, void *vaddr, void *paddr, uint8_t flags) {
     size_t idx = (uint32_t)vaddr >> 22;
