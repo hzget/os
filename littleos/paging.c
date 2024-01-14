@@ -1,15 +1,7 @@
 #include "paging.h"
 #include "constants.h"
 #include "interrupts.h"
-#include "kheap.h"
 #include "stdio.h"
-
-#define FRAME_SIZE BLOCK_SIZE
-#define PD_SIZE BLOCK_SIZE >> 2
-#define PT_SIZE BLOCK_SIZE >> 2
-
-#define USER_STACK_VADDR 0xBFFFFFFB
-#define USER_CODE_VADDR 0x00000000
 
 extern uint32_t kernel_pd;
 extern void set_pd(uint32_t pdt_paddr);

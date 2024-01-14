@@ -5,11 +5,13 @@
 ; get the segment descriptor and then access that segment.
 ;
 ; Gloable Descriptor Table (in our cases)
-; --------------------------------------------------
-; | Address          | index | content             |
-; | GDTR offset + 0  |   0   | Null                |
-; | GDTR offset + 8  |   1   | segement descriptor |
-; | GDTR offset + 16 |   0   | segement descriptor |
+; -------------------------------------------------------------
+; | Address          | index |            content             |
+; | GDTR offset + 0  |   0   |            Null                |
+; | GDTR offset + 8  |   1   | kernel code segment descriptor |
+; | GDTR offset + 16 |   2   | kernel data segment descriptor |
+; | GDTR offset + 24 |   3   | user code segment descriptor   |
+; | GDTR offset + 32 |   4   | user data segment descriptor   |
 ;
 ; (Re)load GDT
 ;

@@ -1,9 +1,13 @@
 #include "constants.h"
 #include "multiboot.h"
+#include "paging.h"
 #include "stdint.h"
 #include "stdio.h"
+#include "string.h"
 
 extern uint32_t grub_multiboot_info;
+extern uint32_t kernel_pd;
+extern void enter_user_mode();
 
 void create_pageframes() {
 }
@@ -32,6 +36,15 @@ void run_apps() {
     typedef void (*call_module_t)(void);
     addr += KERNEL_START_VADDR;
     printf("module start addr 0x%x, size 0x%x\n", addr, size);
-    call_module_t start_program = (call_module_t)(addr);
+
+    uint32_t *newaddr = USER_CODE_VADDR;
+    memcpy((uint8_t *)newaddr, (uint8_t *)addr, size);
+
+    enter_user_mode();
+
+    asm volatile("xchgw %bx, %bx");
+
+    call_module_t start_program = (call_module_t)(newaddr);
     start_program();
+    switch_pd(&kernel_pd);
 }

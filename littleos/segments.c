@@ -2,13 +2,22 @@
 #include "segments.h"
 #include "stdio.h"
 
-#define DESCRIPTORS_COUNT 3
+#define DESCRIPTORS_COUNT 5
 
 #define BASE 0
 #define LIMIT 0xFFFFF
 
+/* Bit:     | 7 | 65 | 4 | 3 | 2 | 1 | 0 |
+ * Content: | P | DPL| S | E | DC| RW| A |
+ * Value:   | 1 | 00 | 1 | 1 | 0 | 0 | 1 | = 0x9A
+ * Value:   | 1 | 00 | 1 | 0 | 0 | 1 | 0 | = 0x92
+ * Value:   | 1 | 11 | 1 | 1 | 0 | 0 | 1 | = 0xFA
+ * Value:   | 1 | 11 | 1 | 0 | 0 | 1 | 0 | = 0xF2
+ */
 #define CODE_TYPE 0x9A
 #define DATA_TYPE 0x92
+#define USER_CODE_TYPE 0xFA
+#define USER_DATA_TYPE 0xF2
 
 /*
  * Flags part of `limit_and_flags`.
@@ -58,6 +67,8 @@ void init_gdt() {
     segments_init_descriptor(0, 0x0, 0x0, 0x0, 0x0);
     segments_init_descriptor(1, BASE, LIMIT, CODE_TYPE, FLAGS_PART);
     segments_init_descriptor(2, BASE, LIMIT, DATA_TYPE, FLAGS_PART);
+    segments_init_descriptor(3, BASE, LIMIT, USER_CODE_TYPE, FLAGS_PART);
+    segments_init_descriptor(4, BASE, LIMIT, USER_DATA_TYPE, FLAGS_PART);
 
     segments_load_gdt(gdt);
     segments_load_registers();

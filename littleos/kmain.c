@@ -31,7 +31,7 @@ void kmain() {
     switch_pd(pd);
     check_address_access((uint32_t *)0x00000000);
     check_address_access((uint32_t *)0xBFFFFFFB);
-    check_address_access((uint32_t *)0x00001000); // page fault
+    // check_address_access((uint32_t *)0x00001000); // page fault
     // kheap_check();
     run_apps();
 }
