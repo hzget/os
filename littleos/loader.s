@@ -5,6 +5,7 @@ global loader                   ; the entry symbol for ELF
 global grub_multiboot_info
 extern kmain
 extern kernel_physical_end
+global kernel_pd
 
 ; setting up the multiboot headers for GRUB
 MODULEALIGN equ 1<<0                    ; align loaded modules on page
@@ -28,7 +29,7 @@ section .data
 align 4096
 kernel_pt:
     times 1024 dd 0
-kernel_pdt:
+kernel_pd:
     dd KERNEL_PDT_ID_MAP
     times 1023 dd 0
 
@@ -53,11 +54,11 @@ loader:
     mov ecx, (grub_multiboot_info - KERNEL_START_VADDR)
     mov [ecx], ebx
 
-; set up kernel_pdt to point to kernel_pt (both physical addresses)
+; set up kernel_pd to point to kernel_pt (both physical addresses)
 ; index of pdt is just the highest 10bits of the virtual address
 ; each entry has 4 bytes, thus we use index * 4
-set_up_kernel_pdt:
-    mov ecx, (kernel_pdt - KERNEL_START_VADDR + KERNEL_PDT_IDX*4)
+set_up_kernel_pd:
+    mov ecx, (kernel_pd - KERNEL_START_VADDR + KERNEL_PDT_IDX*4)
     mov edx, (kernel_pt - KERNEL_START_VADDR)
     or  edx, KERNEL_PT_CFG
     mov [ecx], edx
@@ -80,7 +81,7 @@ set_up_kernel_pt:
 ; enable paging for both actual location of kernel
 ; and its higher-half virtual location
 enable_paging:
-    mov ecx, (kernel_pdt - KERNEL_START_VADDR)
+    mov ecx, (kernel_pd - KERNEL_START_VADDR)
     mov cr3, ecx            ; load pdt
 
     mov ecx, cr4
@@ -105,7 +106,7 @@ higher_half:
 remove_identity_mapping:
     ; The entry mapping of the first 4 MB of virtual memory
     ; to the first 4 MB of physical memory can be removed now
-    mov [kernel_pdt], DWORD 0
+    mov [kernel_pd], DWORD 0
     invlpg [0]
 
     ; point esp to the start of the stack (end of memory area)

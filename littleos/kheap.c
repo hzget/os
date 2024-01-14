@@ -20,10 +20,6 @@ extern uint32_t kernel_heap_virtual_address;
 
 static heap_t kheap;
 
-#define BLOCK_SIZE 0x1000
-// #define HEAP_SIZE 0x1000 << 14 // 4K * 16K = 64M
-#define HEAP_SIZE 0x1000 * 100 // 4K * 10 = 40k
-
 static void clear_block_entry(size_t index);
 static void clear_block_memory(size_t index);
 static size_t get_num_of_blocks(size_t size);
@@ -50,6 +46,12 @@ void *kmalloc(size_t size) {
     }
 
     return get_block_addr(index);
+}
+
+void *kcalloc(size_t size) {
+    void *ptr = kmalloc(size);
+    memset(ptr, 0, size);
+    return ptr;
 }
 
 void kfree(void *ptr) {

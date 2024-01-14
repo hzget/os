@@ -26,6 +26,12 @@ void kmain() {
     init_paging();
     // page_fault_check();
     init_kheap();
+    uint32_t *pd = create_user_pd();
+    printf("pd = 0x%x\n", pd);
+    switch_pd(pd);
+    check_address_access((uint32_t *)0x00000000);
+    check_address_access((uint32_t *)0xBFFFFFFB);
+    check_address_access((uint32_t *)0x00001000); // page fault
     // kheap_check();
     run_apps();
 }

@@ -26,6 +26,10 @@ void page_fault_check() {
     printf("[0x%08x] is 0x%08x\n", ptr, *ptr);
 }
 
+void check_address_access(uint32_t *addr) {
+    printf("%s: 0x%08x[0]=0x%08x\n", __func__, addr, addr[0]);
+}
+
 void kheap_check() {
     void *ptr1 = kmalloc(4096);
     printf("ptr1: %x\n", ptr1);
