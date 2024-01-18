@@ -29,6 +29,7 @@ latest
 Structure
 ---------
 
+* [bare_bones](./bare_bones): a minimal system from osdev
 * [bare](./bare): code on "bared" board before running an os
 * [littleos](./littleos): relating to kernel & drivers
 in [Little OS Book][littleosbook]
