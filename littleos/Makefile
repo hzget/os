@@ -1,11 +1,21 @@
+#
+# cross-compiler:
+#
+#     https://wiki.osdev.org/GCC_Cross-Compiler
+#
+#
 OBJECTS = loader.o kmain.o framebuffer.o io.o serial.o segments.o gdt.o interrupts.o interrupt_handlers.o pic.o keyboard.o
 OBJECTS += stdio.o check.o paging.o module.o kheap.o mem.o string.o pd.o user_mode.o
-CC = gcc
-CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
-	-nostartfiles -nodefaultlibs -Wall -Wextra -Werror -g -c
-LDFLAGS = -T link.ld -melf_i386
+
 AS = nasm
+#AS = i686-elf-as
+CC = i686-elf-gcc
+LD = $(CC)
+
 ASFLAGS = -f elf
+CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Werror -c
+LDFLAGS = -T link.ld -ffreestanding -O2 -nostdlib -lgcc
+
 AS_HEADERS = constants.inc
 
 BIN_PATH = iso/modules/
@@ -15,8 +25,10 @@ ISO_DIR = iso
 
 all: os.iso
 
+build: kernel.elf build_apps
+
 kernel.elf: $(OBJECTS)
-	ld $(LDFLAGS) $(OBJECTS) -o kernel.elf
+	$(LD) $(LDFLAGS) $(OBJECTS) -o kernel.elf
 
 os.iso: kernel.elf create_bin_folder
 

@@ -3,7 +3,7 @@
 #ifndef CHECK_H
 #define CHECK_H
 
-#include "stdint.h"
+#include <stdint.h>
 
 void multiboot_check();
 void kernel_check();

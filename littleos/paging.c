@@ -76,14 +76,14 @@ static void copy_kernel_pd(uint32_t *pd, uint32_t *kernel_pd) {
     }
 }
 
-static void page_fault(struct cpu_state, unsigned int,
+static void page_fault(struct cpu_state, uint32_t,
                        struct stack_state stack);
 
 void init_paging() {
     register_interrupt_handler(E_Page_Fault, page_fault);
 }
 
-static void page_fault(struct cpu_state, unsigned int,
+static void page_fault(struct cpu_state, uint32_t,
                        struct stack_state stack) {
     uint32_t faulting_address;
     __asm__ volatile("mov %%cr2, %0" : "=r"(faulting_address));

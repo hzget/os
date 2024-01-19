@@ -3,8 +3,8 @@
 #ifndef KHEAP_H
 #define KHEAP_H
 
-#include "stddef.h"
-#include "stdint.h"
+#include <stddef.h>
+#include <stdint.h>
 
 #define BLOCK_SIZE 0x1000
 // #define HEAP_SIZE 0x1000 << 14 // 4K * 16K = 64M

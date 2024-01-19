@@ -1,7 +1,7 @@
 #include "constants.h"
 #include "multiboot.h"
 #include "paging.h"
-#include "stdint.h"
+#include <stdint.h>
 #include "stdio.h"
 #include "string.h"
 

@@ -1,13 +1,16 @@
 OBJECTS = hello.o start.o
-CC = gcc
-CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
-		 -fno-pie -g \
-		 -nostartfiles -nodefaultlibs -Wall -Wextra -Werror \
-		 -Wno-unused-function -c
+
 AS = nasm
+#AS = i686-elf-as
+CC = i686-elf-gcc
+LD = $(CC)
+
 ASFLAGS = -f elf
-LD = ld
-LDFLAGS = -T link.ld -melf_i386
+CFLAGS = -std=gnu99 -O2 -Wall -Wextra -Werror -c
+LDFLAGS = -T link.ld -O2 -nostdlib
+
+
+
 LIBC = -L../libc -lc
 STDINCLUDE = -I../libc
 

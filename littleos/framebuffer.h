@@ -11,7 +11,7 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
-#include "stdint.h"
+#include <stdint.h>
 
 /** fb_write:
  *  Write a buffer of bytes to framebuffer

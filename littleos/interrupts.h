@@ -4,7 +4,7 @@
 #define INTERRUPTS_H
 
 #include "pic.h"
-#include "stdint.h"
+#include <stdint.h>
 
 // Exceptions: https://wiki.osdev.org/Exceptions
 #define E_Page_Fault 14

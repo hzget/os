@@ -1,7 +1,7 @@
 #include "constants.h"
 #include "kheap.h"
 #include "multiboot.h"
-#include "stdint.h"
+#include <stdint.h>
 #include "stdio.h"
 
 extern uint32_t grub_multiboot_info;

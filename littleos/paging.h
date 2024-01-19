@@ -4,7 +4,7 @@
 #define PAGING_H
 
 #include "kheap.h"
-#include "stdint.h"
+#include <stdint.h>
 
 #define FRAME_SIZE BLOCK_SIZE
 #define PD_SIZE BLOCK_SIZE >> 2
