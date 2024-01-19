@@ -117,38 +117,6 @@ void fb_put_s(const char *s) {
     }
 }
 
-void fb_put_ui(uint32_t i) {
-    /* FIXME: please make this code more beautiful */
-    uint32_t n, digit;
-    if (i >= 1000000000) {
-        n = 1000000000;
-    } else {
-        n = 1;
-        while (n * 10 <= i) {
-            n *= 10;
-        }
-    }
-    while (n > 0) {
-        digit = i / n;
-        fb_put_b('0' + digit);
-        i %= n;
-        n /= 10;
-    }
-}
-
-void fb_put_ui_hex(uint32_t n) {
-    char *chars = "0123456789ABCDEF";
-    uint8_t b = 0;
-    int i;
-
-    fb_put_s("0x");
-
-    for (i = 7; i >= 0; --i) {
-        b = (n >> i * 4) & 0x0F;
-        fb_put_b(chars[b]);
-    }
-}
-
 void fb_clear() {
     uint8_t i, j;
     for (i = 0; i < FB_NUM_ROWS; ++i) {
