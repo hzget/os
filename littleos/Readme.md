@@ -11,6 +11,16 @@ the bootloader.
 
 Our repo will complete the code in this book.
 
+* [x] IO drivers: searial/vga output, keyboard input
+* [x] Global Descriptor Table (GDT)
+* [x] Interrupt Descriptor Table (IDT)
+* [x] Paging
+* [x] Memory Allocation: malloc/calloc/free
+* [x] User mode
+* [ ] System Calls
+* [ ] File Systems
+* [ ] Multitasking
+
 structure
 ---------
 
