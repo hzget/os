@@ -17,7 +17,7 @@ Our repo will complete the code in this book.
 * [x] Paging
 * [x] Memory Allocation: malloc/calloc/free
 * [x] User mode
-* [ ] System Calls
+* [x] System Calls
 * [ ] File Systems
 * [ ] Multitasking
 

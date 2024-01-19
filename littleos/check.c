@@ -1,8 +1,8 @@
 #include "constants.h"
 #include "kheap.h"
 #include "multiboot.h"
-#include <stdint.h>
 #include "stdio.h"
+#include <stdint.h>
 
 extern uint32_t grub_multiboot_info;
 extern uint32_t kernel_physical_start;

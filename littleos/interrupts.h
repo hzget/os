@@ -19,6 +19,8 @@
 #define IRQ6 IRQ0 + 6
 #define IRQ7 IRQ0 + 7
 
+#define INT_SYSCALL 128 // 0x80
+
 struct cpu_state {
     uint32_t eax;
     uint32_t ebx;
@@ -35,6 +37,8 @@ struct stack_state {
     uint32_t eip;
     uint32_t cs;
     uint32_t eflags;
+    uint32_t esp; // exist only for inter-level interrupt
+    uint32_t ss;  // exist only for inter-level interrupt
 } __attribute__((packed));
 
 // Enables registration of callbacks for interrupts or IRQs.

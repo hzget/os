@@ -11,6 +11,8 @@
 #include "segments.h"
 #include "serial.h"
 #include "stdio.h"
+#include "syscall.h"
+#include "tss.h"
 
 char welcome[] = "Little OS";
 
@@ -27,5 +29,7 @@ void kmain() {
     // page_fault_check();
     init_kheap();
     // kheap_check();
+    init_tss();
+    init_syscalls();
     run_apps();
 }

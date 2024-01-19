@@ -73,9 +73,12 @@ extern void *isr_stub_table[];
 void init_idt() {
 
     int i;
-    for (i = 0; i < 35; i++) {
+    for (i = 0; i < 34; i++) {
         idt_set_descriptor(i, isr_stub_table[i], 0x8E);
     }
+
+    // for system call
+    idt_set_descriptor(INT_SYSCALL, isr_stub_table[i], 0xEE);
 
     idtr.base = (uint32_t)&idt[0];
     idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;

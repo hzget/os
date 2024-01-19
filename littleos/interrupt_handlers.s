@@ -64,6 +64,8 @@ isr_no_err_stub 31
 isr_no_err_stub 32 ; IRQ0
 isr_no_err_stub 33 ; IRQ1 - keyboard
 
+isr_no_err_stub 128 ; for system call (int 0x80)
+
 global isr_stub_table
 isr_stub_table:
 %assign i 0
@@ -71,3 +73,5 @@ isr_stub_table:
     dd isr_stub_%+i ; use DQ instead if targeting 64-bit
 %assign i i+1
 %endrep
+    dd isr_stub_128
+

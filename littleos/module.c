@@ -1,9 +1,9 @@
 #include "constants.h"
 #include "multiboot.h"
 #include "paging.h"
-#include <stdint.h>
 #include "stdio.h"
 #include "string.h"
+#include <stdint.h>
 
 extern uint32_t grub_multiboot_info;
 extern uint32_t kernel_pd;
