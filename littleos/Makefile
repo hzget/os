@@ -11,23 +11,19 @@ AS_HEADERS = constants.inc
 BIN_PATH = iso/modules/
 APPS = main
 
+ISO_DIR = iso
+
 all: os.iso
 
 kernel.elf: $(OBJECTS)
 	ld $(LDFLAGS) $(OBJECTS) -o kernel.elf
 
 os.iso: kernel.elf create_bin_folder
-	cp kernel.elf iso/boot/kernel.elf
-	genisoimage -R                              \
-                    -b boot/grub/stage2_eltorito    \
-                    -no-emul-boot                   \
-                    -boot-load-size 4               \
-                    -A os                           \
-                    -input-charset utf8             \
-                    -quiet                          \
-                    -boot-info-table                \
-                    -o os.iso                       \
-                    iso
+
+	mkdir -p $(ISO_DIR)/boot/grub
+	cp kernel.elf $(ISO_DIR)/boot/kernel.elf
+	cp grub.cfg $(ISO_DIR)/boot/grub/grub.cfg
+	grub-mkrescue -o os.iso $(ISO_DIR)
 
 create_bin_folder: build_apps
 	@echo '-> Copying applications to bin folder'
@@ -63,7 +59,7 @@ clean:
 	@echo ''
 	@echo '-> Cleaning bin'
 	if [ -d $(BIN_PATH) ]; then rm $(BIN_PATH) -rf; fi
-	rm -rf *.o kernel.elf os.iso *.out
+	rm -rf *.o kernel.elf os.iso *.out $(ISO_DIR)
 
 clang-format:
 	clang-format -i *.c *.h
