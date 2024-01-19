@@ -15,12 +15,12 @@
  */
 void init_gdt();
 
-struct GDT {
+struct GDTR {
     unsigned short size;
     unsigned int address;
 } __attribute__((packed));
 
-struct GDTDescriptor {
+struct GDT {
     unsigned short limit_low;
     unsigned short base_low;
     unsigned char base_middle;
@@ -30,6 +30,6 @@ struct GDTDescriptor {
 } __attribute__((packed));
 
 // Wrappers around ASM.
-void segments_load_gdt(struct GDT gdt);
+void segments_load_gdt(struct GDTR gdt);
 void segments_load_registers();
 #endif /* SEGMENTS_H */

@@ -15,9 +15,7 @@
 #include "stdio.h"
 #include "tss.h"
 
-#define DESCRIPTORS_COUNT 6
-
-#define TSS_SEGSEL (5 * 8)
+#define TSS_SELECTOR (5 * 8)
 
 #define BASE 0
 #define LIMIT 0xFFFFF
@@ -51,21 +49,20 @@
 #define FLAGS 0x0C
 #define TSS_FLAGS 0x0
 
-static struct GDTDescriptor gdt_descriptors[DESCRIPTORS_COUNT];
+static struct GDT gdt[6];
 
-static void segments_init_descriptor(int index, uint32_t base_address,
-                                     uint32_t limit, uint8_t access_byte,
-                                     uint8_t flags) {
+static void init_gdt_entry(int index, uint32_t base_address, uint32_t limit,
+                           uint8_t access_byte, uint8_t flags) {
 
-    gdt_descriptors[index].base_low = base_address & 0xFFFF;
-    gdt_descriptors[index].base_middle = (base_address >> 16) & 0xFF;
-    gdt_descriptors[index].base_high = (base_address >> 24) & 0xFF;
+    gdt[index].base_low = base_address & 0xFFFF;
+    gdt[index].base_middle = (base_address >> 16) & 0xFF;
+    gdt[index].base_high = (base_address >> 24) & 0xFF;
 
-    gdt_descriptors[index].limit_low = limit & 0xFFFF;
-    gdt_descriptors[index].limit_and_flags = (limit >> 16) & 0xF;
-    gdt_descriptors[index].limit_and_flags |= (flags << 4) & 0xF0;
+    gdt[index].limit_low = limit & 0xFFFF;
+    gdt[index].limit_and_flags = (limit >> 16) & 0xF;
+    gdt[index].limit_and_flags |= (flags << 4) & 0xF0;
 
-    gdt_descriptors[index].access_byte = access_byte;
+    gdt[index].access_byte = access_byte;
 }
 
 /** init_gdt:
@@ -76,26 +73,28 @@ static void segments_init_descriptor(int index, uint32_t base_address,
  *
  *  gdt index:
  *    0 : null descriptor
- *    1 : code segement descriptor
- *    2 : data segement descriptor
+ *    1 : kernel code segment descriptor
+ *    2 : kernel data segment descriptor
+ *    3 : user code segment descriptor
+ *    4 : user data segment descriptor
+ *    5 : tss descriptor
  */
 void init_gdt() {
 
-    struct GDT gdt;
-    gdt.address = (uint32_t)gdt_descriptors;
-    gdt.size = (sizeof(struct GDTDescriptor) * DESCRIPTORS_COUNT) - 1;
+    struct GDTR gdtr;
+    gdtr.address = (uint32_t)gdt;
+    gdtr.size = sizeof(gdt) - 1;
 
-    segments_init_descriptor(0, 0x0, 0x0, 0x0, 0x0);
-    segments_init_descriptor(1, BASE, LIMIT, CODE_ACCESS_BYTE, FLAGS);
-    segments_init_descriptor(2, BASE, LIMIT, DATA_ACCESS_BYTE, FLAGS);
-    segments_init_descriptor(3, BASE, LIMIT, USER_CODE_ACCESS_BYTE, FLAGS);
-    segments_init_descriptor(4, BASE, LIMIT, USER_DATA_ACCESS_BYTE, FLAGS);
-    segments_init_descriptor(5, tss_addr(), sizeof(tss_t) - 1, TSS_ACCESS_BYTE,
-                             TSS_FLAGS);
+    init_gdt_entry(0, 0x0, 0x0, 0x0, 0x0);
+    init_gdt_entry(1, BASE, LIMIT, CODE_ACCESS_BYTE, FLAGS);
+    init_gdt_entry(2, BASE, LIMIT, DATA_ACCESS_BYTE, FLAGS);
+    init_gdt_entry(3, BASE, LIMIT, USER_CODE_ACCESS_BYTE, FLAGS);
+    init_gdt_entry(4, BASE, LIMIT, USER_DATA_ACCESS_BYTE, FLAGS);
+    init_gdt_entry(5, tss_addr(), sizeof(tss_t), TSS_ACCESS_BYTE, TSS_FLAGS);
 
-    segments_load_gdt(gdt);
+    segments_load_gdt(gdtr);
     segments_load_registers();
     printf("gdt installed\n");
 
-    tss_load_and_set(TSS_SEGSEL);
+    tss_load_and_set(TSS_SELECTOR);
 }
