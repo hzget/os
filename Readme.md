@@ -34,7 +34,7 @@ Structure
 * [littleos](./littleos): relating to kernel & drivers
 in [Little OS Book][littleosbook]
 * [jamesm_os](./jamesm_os): an implementation of
-[JamesM's kernel development tutorials][tutorial]
+[JamesM's kernel development tutorials][tutorial] (***Deprecated***)
 
 Before Running An OS
 --------------------
