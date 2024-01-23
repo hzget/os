@@ -24,7 +24,7 @@ v1.0.0-alpha
 
 latest
 
- * littleos - support paging
+ * littleos - support paging, user mode, system call
 
 Structure
 ---------
