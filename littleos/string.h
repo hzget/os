@@ -2,13 +2,18 @@
 #ifndef STRING_H
 #define STRING_H
 
+#include <stddef.h>
 #include <stdint.h>
 
+int memcmp(const uint8_t *s1, const uint8_t *s2, size_t n);
 void memcpy(uint8_t *dest, const uint8_t *src, uint32_t len);
 void memset(uint8_t *dest, uint8_t val, uint32_t len);
 int strcmp(char *str1, char *str2);
 char *strcpy(char *dest, const char *src);
 char *strcat(char *dest, const char *src);
-uint32_t strlen(const char *str);
+size_t strlen(const char *s);
+size_t strnlen(const char *s, size_t maxlen);
 
+int isdigit(char c);
+int tonumericdigit(char c);
 #endif // STRING_H
