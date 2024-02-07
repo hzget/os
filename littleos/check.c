@@ -2,6 +2,7 @@
 #include "disk.h"
 #include "kheap.h"
 #include "multiboot.h"
+#include "pparser.h"
 #include "stdio.h"
 #include <stdint.h>
 
@@ -38,6 +39,11 @@ void check_disk() {
         printf("%s() failed: status is %d\n", __func__, status);
     }
     asm volatile("xchgw %bx, %bx");
+}
+
+void check_pparser() {
+    path_root_t *root = pathparser_parse("1:/proj/github.com");
+    pathparser_free(root);
 }
 
 void kheap_check() {

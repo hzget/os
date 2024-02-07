@@ -35,4 +35,5 @@ void kmain() {
     init_tss();
     init_syscalls();
     // run_apps();
+    check_pparser();
 }

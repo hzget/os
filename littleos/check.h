@@ -11,5 +11,6 @@ void page_fault_check();
 void kheap_check();
 void check_address_access(uint32_t *addr);
 void check_disk();
+void check_pparser();
 
 #endif /* CHECK_H */
