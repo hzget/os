@@ -101,7 +101,7 @@ static void serial_init() {
     __serial_init_done = 1;
 }
 
-static void serial_write_cell(char c) {
+void serial_write_cell(char c) {
     int fifo_is_empty = 0;
     do {
         fifo_is_empty = serial_is_transmit_fifo_empty(SERIAL_COM1_BASE);

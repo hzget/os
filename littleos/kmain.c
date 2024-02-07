@@ -22,7 +22,7 @@ void kmain() {
     printf("Hello %s\n", welcome);
     multiboot_check();
     kernel_check();
-    serial_write(welcome, sizeof(welcome));
+    // serial_write(welcome, sizeof(welcome));
     init_kb();
     init_gdt();
     init_idt();

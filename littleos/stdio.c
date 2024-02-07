@@ -5,6 +5,7 @@
  *
  */
 #include "framebuffer.h"
+#include "serial.h"
 
 /* Convert the integer D to a string and save the string in BUF. If
    BASE is equal to ’d’, interpret that D is decimal, and if BASE is
@@ -58,6 +59,7 @@ void printf(const char *format, ...) {
     while ((c = *format++) != 0) {
         if (c != '%') {
             fb_put_b(c);
+            serial_write_cell(c);
         } else {
             char *p, *p2;
             int pad0 = 0, pad = 0;
@@ -94,14 +96,17 @@ void printf(const char *format, ...) {
                 }
                 for (; p2 < p + pad; p2++) {
                     fb_put_b(pad0 ? '0' : ' ');
+                    serial_write_cell(pad0 ? '0' : ' ');
                 }
                 while (*p) {
                     fb_put_b(*p++);
+                    serial_write_cell(*(p - 1));
                 }
                 break;
 
             default:
                 fb_put_b(*((int *)arg++));
+                serial_write_cell(*((int *)(arg - 1)));
                 break;
             }
         }

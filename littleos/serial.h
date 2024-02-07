@@ -13,4 +13,5 @@
  */
 int serial_write(char *buf, unsigned int len);
 
+void serial_write_cell(char c);
 #endif /* SERIAL_H */
