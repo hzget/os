@@ -7,6 +7,7 @@
 OBJECTS = loader.o kmain.o framebuffer.o io.o serial.o segments.o gdt.o interrupts.o interrupt_handlers.o pic.o keyboard.o
 OBJECTS += stdio.o check.o paging.o module.o kheap.o mem.o string.o pd.o user_mode.o
 OBJECTS += tss.o syscall.o tss_asm.o
+OBJECTS += disk/disk.o
 
 AS = nasm
 #AS = i686-elf-as
@@ -15,12 +16,14 @@ LD = $(CC)
 
 ASFLAGS = -f elf
 CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Werror -c -g
+CFLAGS += -I. -I./disk
 LDFLAGS = -T link.ld -ffreestanding -O2 -nostdlib -lgcc
 
 AS_HEADERS = constants.inc
 
 BIN_PATH = iso/modules/
 APPS = main
+HD = harddisk.img
 
 ISO_DIR = iso
 
@@ -31,7 +34,12 @@ build: kernel.elf build_apps
 kernel.elf: $(OBJECTS)
 	$(LD) $(LDFLAGS) $(OBJECTS) -o kernel.elf
 
-os.iso: kernel.elf create_bin_folder
+harddisk.img:
+	if ! [ -f $(HD) ]; then \
+	  qemu-img create -f raw $(HD) 1K; \
+	fi
+
+os.iso: kernel.elf create_bin_folder $(HD)
 
 	mkdir -p $(ISO_DIR)/boot/grub
 	cp kernel.elf $(ISO_DIR)/boot/kernel.elf
@@ -57,7 +65,7 @@ qemu: os.iso
 	qemu-system-i386 -boot d -cdrom os.iso -m 256M -serial file:com1.qemu.out
 qemugdb: os.iso
 	#qemu-system-i386 -s -S -m 32M -boot c -hda master.img
-	qemu-system-i386 -s -S -m 256M -boot d -cdrom os.iso
+	qemu-system-i386 -s -S -m 256M -boot d -cdrom os.iso -hdb $(HD)
 
 %.o: %.c
 	$(CC) $(CFLAGS)  $< -o $@
@@ -72,8 +80,9 @@ clean:
 	@echo ''
 	@echo '-> Cleaning bin'
 	if [ -d $(BIN_PATH) ]; then rm $(BIN_PATH) -rf; fi
-	rm -rf *.o kernel.elf os.iso *.out $(ISO_DIR)
+	rm -rf *.o kernel.elf os.iso *.out $(ISO_DIR) *.img
+	find . -name '*.o' -type f -delete
 
 clang-format:
-	clang-format -i *.c *.h
+	clang-format -i *.c *.h */*.c */*.h
 

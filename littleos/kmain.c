@@ -2,6 +2,7 @@
 
 #include "check.h"
 #include "constants.h"
+#include "disk.h"
 #include "framebuffer.h"
 #include "interrupts.h"
 #include "keyboard.h"
@@ -31,5 +32,11 @@ void kmain() {
     // kheap_check();
     init_tss();
     init_syscalls();
-    run_apps();
+    // run_apps();
+
+    char buf[512];
+    disk_read_sector(0, 1, buf);
+    asm volatile("xchgw %bx, %bx");
+    while (1) {
+    }
 }
