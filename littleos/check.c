@@ -1,9 +1,11 @@
+#include "check.h"
 #include "constants.h"
 #include "disk.h"
 #include "kheap.h"
 #include "multiboot.h"
 #include "pparser.h"
 #include "stdio.h"
+#include "streamer.h"
 #include <stdint.h>
 
 extern uint32_t grub_multiboot_info;
@@ -35,7 +37,7 @@ void check_address_access(uint32_t *addr) {
 void check_disk() {
     char buf[512];
     int32_t status = disk_read_block(disk_get(1), 0, 1, buf);
-    if (!status) {
+    if (!SUCCESS(status)) {
         printf("%s() failed: status is %d\n", __func__, status);
     }
     asm volatile("xchgw %bx, %bx");
@@ -44,6 +46,24 @@ void check_disk() {
 void check_pparser() {
     path_root_t *root = pathparser_parse("1:/proj/github.com");
     pathparser_free(root);
+}
+
+void check_streamer() {
+    disk_stream_t *stream = diskstreamer_new(1);
+    diskstreamer_seek(stream, 0x100);
+    void *out = kcalloc(16);
+    int32_t status = diskstreamer_read(stream, out, 16);
+    if (!SUCCESS(status)) {
+        printf("%s() failed, status: %d\n", __func__, status);
+    } else {
+        printf("%s() out = ", __func__);
+        for (uint32_t i = 0; i < 16; i++) {
+            printf("0x%x ", ((uint8_t *)out)[i]);
+        }
+        printf("\n");
+    }
+    diskstreamer_close(stream);
+    kfree(out);
 }
 
 void kheap_check() {

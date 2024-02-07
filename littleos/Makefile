@@ -7,7 +7,7 @@
 OBJECTS = loader.o kmain.o framebuffer.o io.o serial.o segments.o gdt.o interrupts.o interrupt_handlers.o pic.o keyboard.o
 OBJECTS += stdio.o check.o paging.o module.o kheap.o mem.o string.o pd.o user_mode.o
 OBJECTS += tss.o syscall.o tss_asm.o
-OBJECTS += disk/disk.o fs/pparser.o
+OBJECTS += disk/disk.o disk/streamer.o fs/pparser.o
 
 AS = nasm
 #AS = i686-elf-as
@@ -36,7 +36,7 @@ kernel.elf: $(OBJECTS)
 
 harddisk.img:
 	if ! [ -f $(HD) ]; then \
-	  qemu-img create -f raw $(HD) 1K; \
+	  qemu-img create -f raw $(HD) 3K; \
 	fi
 
 os.iso: kernel.elf create_bin_folder $(HD)
@@ -62,7 +62,7 @@ bochs: os.iso
 
 qemu: os.iso
 #	qemu-system-x86_64 -boot d -cdrom os.iso -m 4 -monitor stdio
-	qemu-system-i386 -boot d -cdrom os.iso -m 256M -serial file:com1.qemu.out
+	qemu-system-i386 -boot d -cdrom os.iso -hdb $(HD) -m 256M -serial file:com1.qemu.out
 qemugdb: os.iso
 	#qemu-system-i386 -s -S -m 32M -boot c -hda master.img
 	qemu-system-i386 -s -S -m 256M -boot d -cdrom os.iso -hdb $(HD)

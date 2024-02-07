@@ -17,7 +17,7 @@ disk_t disk;
  *  @return       0 if success
  *                #err if failed
  */
-static int32_t disk_read_sector(uint32_t lba, uint8_t total, void *buf) {
+static int32_t disk_read_sector(uint32_t lba, int32_t total, void *buf) {
     outb(0x1F6, (lba >> 24) | 0xF0);
     outb(0x1F2, total);
     outb(0x1F3, (uint8_t)(lba & 0xff));
@@ -26,7 +26,7 @@ static int32_t disk_read_sector(uint32_t lba, uint8_t total, void *buf) {
     outb(0x1F7, 0x20);
 
     uint16_t *ptr = (uint16_t *)buf;
-    for (int16_t b = 0; b < total; b++) {
+    for (int32_t b = 0; b < total; b++) {
         // Wait ready status
         uint8_t c = inb(0x1F7);
         while (!(c & 0x08)) {
@@ -65,7 +65,7 @@ disk_t *disk_get(int8_t drive) {
  *  @return       0 if success
  *                #err if failed
  */
-int32_t disk_read_block(disk_t *idisk, uint32_t lba, uint8_t total, void *buf) {
+int32_t disk_read_block(disk_t *idisk, uint32_t lba, int32_t total, void *buf) {
     if (idisk != &disk) {
         return -EIO;
     }

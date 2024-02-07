@@ -36,4 +36,5 @@ void kmain() {
     init_syscalls();
     // run_apps();
     check_pparser();
+    check_streamer();
 }
