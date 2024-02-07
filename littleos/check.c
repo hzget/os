@@ -1,4 +1,5 @@
 #include "constants.h"
+#include "disk.h"
 #include "kheap.h"
 #include "multiboot.h"
 #include "stdio.h"
@@ -28,6 +29,15 @@ void page_fault_check() {
 
 void check_address_access(uint32_t *addr) {
     printf("%s: 0x%08x[0]=0x%08x\n", __func__, addr, addr[0]);
+}
+
+void check_disk() {
+    char buf[512];
+    int32_t status = disk_read_block(disk_get(1), 0, 1, buf);
+    if (!status) {
+        printf("%s() failed: status is %d\n", __func__, status);
+    }
+    asm volatile("xchgw %bx, %bx");
 }
 
 void kheap_check() {

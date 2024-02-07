@@ -15,9 +15,9 @@ CC = i686-elf-gcc
 LD = $(CC)
 
 ASFLAGS = -f elf
-CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Werror -c -g
+CFLAGS = -std=gnu99 -ffreestanding -O0 -Wall -Wextra -Werror -c -g
 CFLAGS += -I. -I./disk
-LDFLAGS = -T link.ld -ffreestanding -O2 -nostdlib -lgcc
+LDFLAGS = -T link.ld -ffreestanding -O0 -nostdlib -lgcc
 
 AS_HEADERS = constants.inc
 
