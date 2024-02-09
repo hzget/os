@@ -23,7 +23,8 @@ AS_HEADERS = constants.inc
 
 BIN_PATH = iso/modules/
 APPS = main
-HD = harddisk.img
+HDDIR = harddisk
+HD = $(HDDIR)/harddisk.img
 
 ISO_DIR = iso
 
@@ -34,17 +35,17 @@ build: kernel.elf build_apps
 kernel.elf: $(OBJECTS)
 	$(LD) $(LDFLAGS) $(OBJECTS) -o kernel.elf
 
-harddisk.img:
-	if ! [ -f $(HD) ]; then \
-	  qemu-img create -f raw $(HD) 3K; \
-	fi
-
-os.iso: kernel.elf create_bin_folder $(HD)
+os.iso: kernel.elf create_bin_folder create_harddisk_image
 
 	mkdir -p $(ISO_DIR)/boot/grub
 	cp kernel.elf $(ISO_DIR)/boot/kernel.elf
 	cp grub.cfg $(ISO_DIR)/boot/grub/grub.cfg
 	grub-mkrescue -o os.iso $(ISO_DIR)
+
+create_harddisk_image:
+	@echo '-> Creating harddisk image';
+	@make --no-print-directory -C $(HDDIR);
+	@echo ''; \
 
 create_bin_folder: build_apps
 	@echo '-> Copying applications to bin folder'
@@ -77,6 +78,9 @@ qemugdb: os.iso
 clean:
 	@echo '-> Cleaning apps'
 	@make --no-print-directory -C apps clean
+	@echo ''
+	@echo '-> Cleaning harddisk'
+	@make --no-print-directory -C $(HDDIR) clean
 	@echo ''
 	@echo '-> Cleaning bin'
 	if [ -d $(BIN_PATH) ]; then rm $(BIN_PATH) -rf; fi
