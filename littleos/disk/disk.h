@@ -2,6 +2,7 @@
 #ifndef DISK_H
 #define DISK_H
 
+#include "file.h"
 #include <stdint.h>
 
 #define OS_DISK_TYPE_REAL 0
@@ -18,6 +19,7 @@ typedef struct disk disk_t;
 struct disk {
     uint8_t type;
     uint32_t sector_size;
+    struct filesystem *filesystem;
 };
 
 void init_disk();

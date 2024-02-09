@@ -30,6 +30,7 @@ void kmain() {
     // page_fault_check();
     init_kheap();
     // kheap_check();
+    init_fs();
     init_disk();
     check_disk();
     init_tss();

@@ -7,7 +7,7 @@
 OBJECTS = loader.o kmain.o framebuffer.o io.o serial.o segments.o gdt.o interrupts.o interrupt_handlers.o pic.o keyboard.o
 OBJECTS += stdio.o check.o paging.o module.o kheap.o mem.o string.o pd.o user_mode.o
 OBJECTS += tss.o syscall.o tss_asm.o
-OBJECTS += disk/disk.o disk/streamer.o fs/pparser.o
+OBJECTS += disk/disk.o disk/streamer.o fs/pparser.o fs/file.o fs/fat/fat16.o
 
 AS = nasm
 #AS = i686-elf-as
@@ -16,7 +16,7 @@ LD = $(CC)
 
 ASFLAGS = -f elf
 CFLAGS = -std=gnu99 -ffreestanding -O0 -Wall -Wextra -Werror -c -g
-CFLAGS += -I. -I./disk -I./fs
+CFLAGS += -I. -I./disk -I./fs -I./fs/fat
 LDFLAGS = -T link.ld -ffreestanding -O0 -nostdlib -lgcc
 
 AS_HEADERS = constants.inc
