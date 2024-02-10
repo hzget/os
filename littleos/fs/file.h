@@ -6,10 +6,19 @@
 #include <stdint.h>
 
 typedef uint32_t FILE_SEEK_MODE;
-enum { SEEK_SET, SEEK_CUR, SEEK_END };
+enum {
+    SEEK_SET,
+    SEEK_CUR,
+    SEEK_END
+};
 
 typedef uint32_t FILE_MODE;
-enum { FILE_MODE_READ, FILE_MODE_WRITE, FILE_MODE_APPEND, FILE_MODE_INVALID };
+enum {
+    FILE_MODE_READ,
+    FILE_MODE_WRITE,
+    FILE_MODE_APPEND,
+    FILE_MODE_INVALID
+};
 
 struct disk;
 typedef void *(*fs_open_func)(struct disk *disk, path_part_t *path,
