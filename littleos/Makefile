@@ -88,5 +88,5 @@ clean:
 	find . -name '*.o' -type f -delete
 
 clang-format:
-	clang-format -i *.c *.h */*.c */*.h
+	find . -type f \( -name '*.c' -o -name '*.h' \) -exec clang-format -i {} +
 
