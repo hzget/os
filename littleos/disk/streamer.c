@@ -15,8 +15,9 @@ disk_stream_t *diskstreamer_new(int8_t disk_id) {
     return streamer;
 }
 
-void diskstreamer_seek(disk_stream_t *stream, int32_t pos) {
+int32_t diskstreamer_seek(disk_stream_t *stream, int32_t pos) {
     stream->pos = pos;
+    return 0;
 }
 
 int32_t diskstreamer_read(disk_stream_t *stream, void *out, int32_t total) {

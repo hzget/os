@@ -44,6 +44,7 @@ static int32_t disk_read_sector(uint32_t lba, int32_t total, void *buf) {
 void init_disk() {
     disk.type = OS_DISK_TYPE_REAL;
     disk.sector_size = OS_SECTOR_SIZE;
+    disk.id = HD_DRIVE_SLAVE;
     disk.filesystem = fs_resolve(&disk);
 }
 
