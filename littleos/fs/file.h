@@ -3,6 +3,7 @@
 
 #include "disk.h"
 #include "pparser.h"
+#include <stddef.h>
 #include <stdint.h>
 
 typedef uint32_t FILE_SEEK_MODE;
@@ -24,6 +25,8 @@ struct disk;
 typedef void *(*fs_open_func)(struct disk *disk, path_part_t *path,
                               FILE_MODE mode, int32_t *err_code);
 typedef int (*fs_resolve_func)(struct disk *disk);
+typedef int (*fs_read_func)(struct disk *disk, void *private, uint32_t size,
+                            uint32_t nmemb, char *out);
 
 typedef struct filesystem filesystem_t;
 
@@ -32,6 +35,7 @@ struct filesystem {
     // its filesystem
     fs_resolve_func resolve;
     fs_open_func open;
+    fs_read_func read;
     char name[20];
 };
 
@@ -50,4 +54,5 @@ struct file_descriptor {
 void init_fs();
 struct filesystem *fs_resolve(struct disk *disk);
 int fopen(const char *filename, const char *mode_str);
+int fread(void *ptr, uint32_t size, uint32_t nmemb, int fd);
 #endif

@@ -73,6 +73,16 @@ static int file_new_descriptor(struct file_descriptor **desc_out) {
     return res;
 }
 
+static struct file_descriptor *file_get_descriptor(int fd) {
+    if (fd <= 0 || fd >= MAX_FILE_DESCRIPTORS) {
+        return 0;
+    }
+
+    // Descriptors start at 1
+    int index = fd - 1;
+    return file_descriptors[index];
+}
+
 FILE_MODE file_get_mode_by_string(const char *str) {
     FILE_MODE mode = FILE_MODE_INVALID;
     if (strncmp(str, "r", 1) == 0) {
@@ -141,5 +151,24 @@ out:
         res = 0;
     }
 
+    return res;
+}
+
+int fread(void *ptr, uint32_t size, uint32_t nmemb, int fd) {
+    int res = 0;
+    if (size == 0 || nmemb == 0 || fd < 1) {
+        res = -EINVARG;
+        goto out;
+    }
+
+    struct file_descriptor *desc = file_get_descriptor(fd);
+    if (!desc) {
+        res = -EINVARG;
+        goto out;
+    }
+
+    res = desc->filesystem->read(desc->disk, desc->private, size, nmemb,
+                                 (char *)ptr);
+out:
     return res;
 }

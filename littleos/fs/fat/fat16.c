@@ -119,7 +119,7 @@ struct fat_item {
     union {
         struct fat_directory_item *item;
         struct fat_directory *directory;
-    };
+    } shared;
 
     FAT_ITEM_TYPE type;
 };
@@ -142,11 +142,15 @@ struct fat_private {
 };
 
 static int fat16_resolve(disk_t *disk);
-static void *fat16_open(disk_t *disk, path_part_t *path, FILE_MODE mode, int32_t *ecode);
+static void *fat16_open(disk_t *disk, path_part_t *path, FILE_MODE mode,
+                        int32_t *ecode);
+static int fat16_read(struct disk *disk, void *descriptor, uint32_t size,
+                      uint32_t nmemb, char *out_ptr);
 
 filesystem_t fat16_fs = {
     .resolve = fat16_resolve,
     .open = fat16_open,
+    .read = fat16_read,
 };
 
 filesystem_t *fat16_init() {
@@ -342,7 +346,7 @@ fat16_clone_directory_item(struct fat_directory_item *item, size_t size) {
 
 static uint32_t fat16_get_first_cluster(struct fat_directory_item *item) {
     return (item->high_16_bits_first_cluster) | item->low_16_bits_first_cluster;
-};
+}
 
 static int fat16_cluster_to_sector(struct fat_private *private, int cluster) {
     return private->root_dir.end_sector +
@@ -456,10 +460,10 @@ static int fat16_read_internal_from_stream(disk_t *disk, disk_stream_t *stream,
     total -= total_to_read;
     if (total > 0) {
         // We still have more to read
-	// cluster = cluster_to_use // ??
+        // cluster = cluster_to_use // ??
         res = fat16_read_internal_from_stream(disk, stream, cluster,
                                               offset + total_to_read, total,
-                                              out + total_to_read);
+                                              (uint8_t *)out + total_to_read);
     }
 
 out:
@@ -488,9 +492,9 @@ void fat16_free_directory(struct fat_directory *directory) {
 
 void fat16_fat_item_free(struct fat_item *item) {
     if (item->type == FAT_ITEM_TYPE_DIRECTORY) {
-        fat16_free_directory(item->directory);
+        fat16_free_directory(item->shared.directory);
     } else if (item->type == FAT_ITEM_TYPE_FILE) {
-        kfree(item->item);
+        kfree(item->shared.item);
     }
 
     kfree(item);
@@ -545,13 +549,13 @@ fat16_new_fat_item_for_directory_item(disk_t *disk,
     }
 
     if (item->attribute & FAT_FILE_SUBDIRECTORY) {
-        f_item->directory = fat16_load_fat_directory(disk, item);
+        f_item->shared.directory = fat16_load_fat_directory(disk, item);
         f_item->type = FAT_ITEM_TYPE_DIRECTORY;
         return f_item;
     }
 
     f_item->type = FAT_ITEM_TYPE_FILE;
-    f_item->item =
+    f_item->shared.item =
         fat16_clone_directory_item(item, sizeof(struct fat_directory_item));
     return f_item;
 }
@@ -568,7 +572,7 @@ struct fat_item *fat16_find_item_in_directory(disk_t *disk,
             // Found it let's create a new fat_item
             f_item = fat16_new_fat_item_for_directory_item(disk,
                                                            &directory->item[i]);
-	    break;
+            break;
         }
     }
 
@@ -593,7 +597,7 @@ struct fat_item *fat16_get_directory_entry(disk_t *disk, path_part_t *path) {
         }
 
         struct fat_item *tmp_item = fat16_find_item_in_directory(
-            disk, current_item->directory, next_part->part);
+            disk, current_item->shared.directory, next_part->part);
         fat16_fat_item_free(current_item);
         current_item = tmp_item;
         next_part = next_part->next;
@@ -602,7 +606,8 @@ out:
     return current_item;
 }
 
-void *fat16_open(struct disk *disk, struct path_part *path, FILE_MODE mode, int32_t *ecode) {
+void *fat16_open(struct disk *disk, struct path_part *path, FILE_MODE mode,
+                 int32_t *ecode) {
     struct fat_file_descriptor *descriptor = 0;
     if (mode != FILE_MODE_READ) {
         *ecode = -ERDONLY;
@@ -625,11 +630,32 @@ void *fat16_open(struct disk *disk, struct path_part *path, FILE_MODE mode, int3
     *ecode = STATUS_OK;
     return descriptor;
 
-
 err_out:
     if (descriptor) {
         kfree(descriptor);
     }
 
     return NULL;
+}
+
+static int fat16_read(struct disk *disk, void *descriptor, uint32_t size,
+                      uint32_t nmemb, char *out_ptr) {
+    int res = 0;
+    struct fat_file_descriptor *fat_desc = descriptor;
+    struct fat_directory_item *item = fat_desc->item->shared.item;
+    int offset = fat_desc->pos;
+    for (uint32_t i = 0; i < nmemb; i++) {
+        res = fat16_read_internal(disk, fat16_get_first_cluster(item), offset,
+                                  size, out_ptr);
+        if (ISERR(res)) {
+            goto out;
+        }
+
+        out_ptr += size;
+        offset += size;
+    }
+
+    res = nmemb;
+out:
+    return res;
 }
