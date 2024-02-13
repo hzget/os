@@ -117,11 +117,11 @@ static void set_block_entry(int index, int flag) {
 }
 
 static void *get_block_addr(int index) {
-    return kheap.addr + (BLOCK_SIZE * index);
+    return (uint8_t *)kheap.addr + (BLOCK_SIZE * index);
 }
 
 static size_t get_block_index(void *addr) {
-    size_t offset = addr - kheap.addr;
+    size_t offset = (uint8_t *)addr - (uint8_t *)kheap.addr;
     if (offset % BLOCK_SIZE == 0) {
         return offset / BLOCK_SIZE;
     }
@@ -147,7 +147,7 @@ void init_kheap() {
 
     printf("heap addr:0x%08x ~ 0x%08x\n\t table.entries 0x%08x, table.size "
            "0x%04x\n",
-           kheap.addr, kheap.addr + kheap.table.size * BLOCK_SIZE,
+           kheap.addr, (uint8_t *)kheap.addr + kheap.table.size * BLOCK_SIZE,
            kheap.table.entries, kheap.table.size);
 }
 

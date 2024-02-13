@@ -16,6 +16,7 @@ LD = $(CC)
 
 ASFLAGS = -f elf
 CFLAGS = -std=gnu99 -ffreestanding -O0 -Wall -Wextra -Werror -c -g
+CFLAGS += -pedantic
 CFLAGS += -I. -I./disk -I./fs -I./fs/fat
 LDFLAGS = -T link.ld -ffreestanding -O0 -nostdlib -lgcc
 

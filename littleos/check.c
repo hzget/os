@@ -69,11 +69,11 @@ void check_streamer() {
 void check_fopen() {
     int fd = fopen("1:/hello.txt", "r");
     printf("%s: fopen 1:/hello.txt = %d\n", __func__, fd);
-    if (fd >0) {
-	    char buf[12];
-	    int n = fread(buf, 1, 9, fd);
-	    buf[9] = 0;
-	    printf("fread return %d bytes: %s\n", n, buf);
+    if (fd > 0) {
+        char buf[12];
+        int n = fread(buf, 1, 9, fd);
+        buf[9] = 0;
+        printf("fread return %d bytes: %s\n", n, buf);
     }
 }
 
