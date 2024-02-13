@@ -58,9 +58,12 @@ static char read_keyboard_char(void) {
     return kbd_US[code];
 }
 
-static void kb_handler(struct cpu_state, uint32_t interrupt,
-                       struct stack_state) {
+static void kb_handler(struct cpu_state cpu, uint32_t interrupt,
+                       struct stack_state stack) {
+    (void)cpu;
     (void)interrupt;
+    (void)stack;
+
     char key = read_keyboard_char();
     if (key == 0x0) {
         // ignore non-printable char

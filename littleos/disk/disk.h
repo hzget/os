@@ -20,6 +20,11 @@ struct disk {
     uint8_t type;
     uint32_t sector_size;
     struct filesystem *filesystem;
+
+    uint8_t id;
+
+    // The private data of our filesystem
+    void *fs_private;
 };
 
 void init_disk();

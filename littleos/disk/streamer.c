@@ -15,8 +15,9 @@ disk_stream_t *diskstreamer_new(int8_t disk_id) {
     return streamer;
 }
 
-void diskstreamer_seek(disk_stream_t *stream, int32_t pos) {
+int32_t diskstreamer_seek(disk_stream_t *stream, int32_t pos) {
     stream->pos = pos;
+    return 0;
 }
 
 int32_t diskstreamer_read(disk_stream_t *stream, void *out, int32_t total) {
@@ -24,7 +25,7 @@ int32_t diskstreamer_read(disk_stream_t *stream, void *out, int32_t total) {
     int32_t offset = stream->pos % OS_SECTOR_SIZE;
     int32_t total_to_read = total;
     int32_t overflow = (offset + total_to_read) >= OS_SECTOR_SIZE;
-    char buf[OS_SECTOR_SIZE];
+    uint8_t buf[OS_SECTOR_SIZE];
 
     if (overflow) {
         total_to_read -= (offset + total_to_read) - OS_SECTOR_SIZE;
@@ -36,7 +37,8 @@ int32_t diskstreamer_read(disk_stream_t *stream, void *out, int32_t total) {
     }
 
     for (int32_t i = 0; i < total_to_read; i++) {
-        *(char *)out++ = buf[offset + i];
+        *(uint8_t *)out = buf[offset + i];
+        out = (uint8_t *)out + 1;
     }
 
     stream->pos += total_to_read;

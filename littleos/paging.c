@@ -21,11 +21,11 @@ uint32_t *create_user_pd() {
     uint32_t *pd = (uint32_t *)kcalloc(BLOCK_SIZE);
 
     // code and data space
-    void *addr = kcalloc(BLOCK_SIZE) - KERNEL_START_VADDR;
+    void *addr = (void *)((char *)kcalloc(BLOCK_SIZE) - KERNEL_START_VADDR);
     pd_mmap(pd, (void *)USER_CODE_VADDR, addr, 0x1f);
 
     // stack space
-    addr = kcalloc(BLOCK_SIZE) - KERNEL_START_VADDR;
+    addr = (void *)((char *)kcalloc(BLOCK_SIZE) - KERNEL_START_VADDR);
     pd_mmap(pd, (void *)USER_STACK_VADDR, addr, 0x1f);
 
     // change all virtual address in pde to physical address
@@ -82,7 +82,10 @@ void init_paging() {
     register_interrupt_handler(E_Page_Fault, page_fault);
 }
 
-static void page_fault(struct cpu_state, uint32_t, struct stack_state stack) {
+static void page_fault(struct cpu_state cpu, uint32_t interrupt,
+                       struct stack_state stack) {
+    (void)cpu;
+    (void)interrupt;
     uint32_t faulting_address;
     __asm__ volatile("mov %%cr2, %0" : "=r"(faulting_address));
 

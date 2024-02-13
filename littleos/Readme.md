@@ -18,8 +18,9 @@ Our repo will complete the code in this book.
 * [x] Memory Allocation: malloc/calloc/free
 * [x] User mode
 * [x] System Calls
-* [ ] File Systems
+* [x] File Systems
 * [ ] Multitasking
+* [ ] add gcc options -Wconversion to avoid unexpected behavior
 
 structure
 ---------
@@ -121,6 +122,30 @@ of paging mechnism.
 [paging][paging] gives details of PDT, PT, MMU  
 [higher half][higher half] gives a tutorial for making a higher-half
 kernel  
+
+File System
+-----------
+
+The kernel provides a file system so that the users can
+read/write files easily without having to interact with
+the hardware.
+
+To read/write data stored on the harddisk, the kernel
+has to read/write corresponding sectors. These operations
+shall follow corresponding specifications. In our case,
+we use ATA specification.
+
+File data structure in the hardware corresponds to
+a specific filesystem format such as FAT16, FAT32, NTFS
+and so forth. For our case, we use FAT16.
+
+The kernel abstracts all the functions and provides
+fopen, fread, fstat and fclose utilities for the user.
+
+References:  
+http://www.maverick-os.dk/FileSystemFormats/FAT16_FileSystem.html  
+https://wiki.osdev.org/FAT  
+https://github.com/nibblebits/PeachOS  
 
 [higher half]: https://wiki.osdev.org/Higher_Half_bare_bones
 [paging]: https://wiki.osdev.org/Paging

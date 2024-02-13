@@ -6,6 +6,7 @@
 #include "pparser.h"
 #include "stdio.h"
 #include "streamer.h"
+#include "string.h"
 #include <stdint.h>
 
 extern uint32_t grub_multiboot_info;
@@ -64,6 +65,25 @@ void check_streamer() {
     }
     diskstreamer_close(stream);
     kfree(out);
+}
+
+void check_fopen() {
+    int fd = fopen("1:/hello.txt", "r");
+    printf("%s: fopen 1:/hello.txt = %d\n", __func__, fd);
+    if (fd > 0) {
+        char buf[12];
+        memset((uint8_t *)buf, 0, sizeof(buf));
+        int n = fread(buf, 1, 9, fd);
+        printf("fread return %d bytes: %s\n", n, buf);
+        memset((uint8_t *)buf, 0, sizeof(buf));
+        n = fseek(fd, 2, SEEK_SET);
+        n = fread(buf, 1, 7, fd);
+        printf("fread return %d bytes: %s\n", n, buf);
+        struct file_stat stat;
+        n = fstat(fd, &stat);
+        printf("fstat: flags: %u, filesize: %d\n", stat.flags, stat.filesize);
+        fclose(fd);
+    }
 }
 
 void kheap_check() {

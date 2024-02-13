@@ -46,7 +46,12 @@ void run_apps() {
 
     asm volatile("xchgw %bx, %bx");
 
-    call_module_t start_program = (call_module_t)(newaddr);
+    // If we use newaddr directly, gcc -Werror=pedantic
+    // will give an error:
+    // error: ISO C forbids conversion of object pointer to function pointer
+    // type [-Werror=pedantic]
+    // call_module_t start_program = (call_module_t)(newaddr);
+    call_module_t start_program = (call_module_t)(USER_CODE_VADDR);
     start_program();
     switch_pd(&kernel_pd);
 }
