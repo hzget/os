@@ -38,4 +38,5 @@ void kmain() {
     // run_apps();
     check_pparser();
     check_streamer();
+    check_fopen();
 }

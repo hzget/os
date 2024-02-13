@@ -22,7 +22,7 @@ enum {
 
 struct disk;
 typedef void *(*fs_open_func)(struct disk *disk, path_part_t *path,
-                              FILE_MODE mode);
+                              FILE_MODE mode, int32_t *err_code);
 typedef int (*fs_resolve_func)(struct disk *disk);
 
 typedef struct filesystem filesystem_t;
@@ -49,4 +49,5 @@ struct file_descriptor {
 
 void init_fs();
 struct filesystem *fs_resolve(struct disk *disk);
+int fopen(const char *filename, const char *mode_str);
 #endif

@@ -4,4 +4,6 @@
 #define MAX_FILESYSTEMS 12
 #define MAX_FILE_DESCRIPTORS 512
 
+#define MAX_FILENAME_PATH 64
+
 #endif

@@ -1,9 +1,11 @@
 #include "file.h"
+#include "check.h"
 #include "config.h"
 #include "fat16.h"
 #include "kheap.h"
 #include "status.h"
 #include "stdio.h"
+#include "string.h"
 
 struct filesystem *filesystems[MAX_FILESYSTEMS];
 struct file_descriptor *file_descriptors[MAX_FILE_DESCRIPTORS];
@@ -51,4 +53,93 @@ struct filesystem *fs_resolve(struct disk *disk) {
     }
 
     return fs;
+}
+
+static int file_new_descriptor(struct file_descriptor **desc_out) {
+    int res = -ENOMEM;
+    for (int i = 0; i < MAX_FILE_DESCRIPTORS; i++) {
+        if (file_descriptors[i] == 0) {
+            struct file_descriptor *desc =
+                kcalloc(sizeof(struct file_descriptor));
+            // Descriptors start at 1
+            desc->index = i + 1;
+            file_descriptors[i] = desc;
+            *desc_out = desc;
+            res = 0;
+            break;
+        }
+    }
+
+    return res;
+}
+
+FILE_MODE file_get_mode_by_string(const char *str) {
+    FILE_MODE mode = FILE_MODE_INVALID;
+    if (strncmp(str, "r", 1) == 0) {
+        mode = FILE_MODE_READ;
+    } else if (strncmp(str, "w", 1) == 0) {
+        mode = FILE_MODE_WRITE;
+    } else if (strncmp(str, "a", 1) == 0) {
+        mode = FILE_MODE_APPEND;
+    }
+    return mode;
+}
+
+int fopen(const char *filename, const char *mode_str) {
+    int32_t res = 0;
+    struct path_root *root_path = pathparser_parse(filename);
+    if (!root_path) {
+        res = -EINVARG;
+        goto out;
+    }
+
+    // We cannot have just a root path 0:/ 0:/test.txt
+    if (!root_path->first) {
+        res = -EINVARG;
+        goto out;
+    }
+
+    // Ensure the disk we are reading from exists
+    struct disk *disk = disk_get(root_path->drive_no);
+    if (!disk) {
+        res = -EIO;
+        goto out;
+    }
+
+    if (!disk->filesystem) {
+        res = -EIO;
+        goto out;
+    }
+
+    FILE_MODE mode = file_get_mode_by_string(mode_str);
+    if (mode == FILE_MODE_INVALID) {
+        res = -EINVARG;
+        goto out;
+    }
+
+    void *descriptor_private_data =
+        disk->filesystem->open(disk, root_path->first, mode, &res);
+
+    if (ISERR(res)) {
+        res = ERROR_I(res);
+        goto out;
+    }
+
+    struct file_descriptor *desc = 0;
+    res = file_new_descriptor(&desc);
+    if (res < 0) {
+        goto out;
+    }
+    desc->filesystem = disk->filesystem;
+    desc->private = descriptor_private_data;
+    desc->disk = disk;
+    res = desc->index;
+
+out:
+    // fopen shouldnt return negative values
+    if (res < 0) {
+        res = 0;
+    }
+
+    return res;
 }

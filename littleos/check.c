@@ -66,6 +66,11 @@ void check_streamer() {
     kfree(out);
 }
 
+void check_fopen() {
+	int fd = fopen("1:/hello.txt", "r");
+	printf("%s: fopen 1:/hello.txt = %d\n", __func__, fd);
+}
+
 void kheap_check() {
     void *ptr1 = kmalloc(4096);
     printf("ptr1: %x\n", ptr1);
