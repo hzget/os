@@ -42,6 +42,12 @@ interrupt
 drivers
 -------
 
+- [x] serial
+- [x] keyboard
+- [x] vga
+- [x] harddisk
+- [x] filesystem
+
 A driver acts as a layer between kernel and hardware,
 providing a higher abstraction than communicating directly
 with the hardware. For example, output driver
@@ -141,6 +147,37 @@ and so forth. For our case, we use FAT16.
 
 The kernel abstracts all the functions and provides
 fopen, fread, fstat and fclose utilities for the user.
+
+```bash
+Structure of FileSystem
+
+                            ----------      ----------               ------------
+                            |        |      |        |     ATA       |          |
+                       -----| FAT32  | ---- |  data  |  ------------ | Harddisk |
+                       |    | driver |      | stream | specification |   0:/    |
+                       |    |        |      |        |               |          |
+                       |    ----------      ----------               ------------
+                       |
+          -----------  |    ----------      ----------               ------------
+          | Virtual |  |    |        |      |        |      ATA      |          |
+user ---- | File    |-------| FAT16  | ---- |  data  | ------------- | Harddisk |
+          | System  |       | driver |      | stream | specification |   1:/    |
+          | (VFS)   |       |        |      |        |               |          |
+          -----------       ----------      ----------               ------------
+            fopen,          fat16_open,   diskstream_new           inb/inw/outb/outw
+            fseek,          fat16_seek,   diskstream_seek
+            fread,          fat16_read,   diskstream_read
+            fclose,         fat16_close,  diskstream_close
+            fstat,          fat16_stat,
+```
+
+***Structure of the code***
+
+ * [fs/file.h](./fs/file.h) contains VFS interfaces
+ * [fs/fat/fat16.h](./fs/fat/fat16.h) contains fat16 drivers
+ * [disk/streamer.h](./disk/streamer.h) contains harddisk data stream
+ * [disk/disk.h](./disk/disk.h) contains disk operations that take a sector as a unit
+ * [io.h](./io.h) contains in/out funcs to access harddisk via ATA specification
 
 References:  
 http://www.maverick-os.dk/FileSystemFormats/FAT16_FileSystem.html  
