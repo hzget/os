@@ -18,8 +18,9 @@ Our repo will complete the code in this book.
 * [x] Memory Allocation: malloc/calloc/free
 * [x] User mode
 * [x] System Calls
-* [ ] File Systems
+* [ ] File Systems -- on going
 * [ ] Multitasking
+* [ ] add gcc options -Wconversion to avoid unexpected behavior
 
 structure
 ---------
