@@ -62,8 +62,36 @@ The kernel can use it directly to write a buffer to the framebuffer.
 Detailed hareware operations are implemented in
 [io.s](./io.s) and [framebuffer.c](./framebuffer.c).
 
-Interrupt
----------
+Global Descriptor Table (GDT)
+-----------------------------
+
+The Global Descriptor Table (GDT) is a binary data structure specific to
+the IA-32 and x86-64 architectures.
+It contains entries telling the CPU about memory segments.
+Each time the CPU wants to access some memory data (such as
+to get next code instruction), it will
+refer to GDT to get corresponding info such as
+segment address, descriptor privilege level (DPL) and so forth.
+Then it will:
+
+* perform safety and access control checks
+* cache useful values in (in)visible CPU registers.
+* access the required memory data
+
+Next time when the CPU wants to access the same segement,
+it will just use the cached values in the registers.
+
+***Structure of the code***:  
+[segments.h](./segments.h) provides funcs to construct GDT  
+[gdt.s](./gdt.s) provides funcs to load GDT info to processor  
+
+***Reference***:  
+[Global Descriptor Table][GDT],  
+[GDT Tutorial][GDT Tutorial],  
+[Global Descriptor Table (wikipedia)][GDT (wikipedia)],  
+
+Interrupt Descriptor Table (IDT)
+--------------------------------
 
 keyword:
 
@@ -81,6 +109,13 @@ After that, the CPU returns to its previous tasks.
 The code that is run in response to the interrupt is known as
 a interrupt service routine (ISR) or an interrupt handler.
 
+***Structure of the code***:  
+[interrupts.h](./interrupts.h) provides the ***IDT*** initializer
+and an interface to register handlers  
+[interrupt_handlers.s](./interrupt_handler.s) provides a common handler
+that prepares stack for specific handlers.
+
+***References***:  
 [littleosbook][littleosbook] gives a simple and clear explanation
 of the interrupt handling machnism.  
 [interrupts][interrupts] gives an overall introduction and gives
@@ -190,3 +225,6 @@ https://github.com/nibblebits/PeachOS
 [8259 PIC]: https://wiki.osdev.org/8259_PIC
 [interrupts]: https://wiki.osdev.org/Interrupts
 [littleosbook]: https://littleosbook.github.io/
+[GDT]: https://wiki.osdev.org/Global_Descriptor_Table
+[GDT Tutorial]: https://wiki.osdev.org/GDT_Tutorial
+[GDT (wikipedia)]: https://en.wikipedia.org/wiki/Global_Descriptor_Table
