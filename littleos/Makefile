@@ -4,7 +4,7 @@
 #     https://wiki.osdev.org/GCC_Cross-Compiler
 #
 #
-OBJECTS = loader.o kmain.o framebuffer.o io.o serial.o segments.o gdt.o interrupts.o interrupt_handlers.o pic.o keyboard.o
+OBJECTS = loader.o kmain.o framebuffer.o io.o serial.o segments.o gdt.o interrupts.o interrupt_handlers.o pic.o keyboard.o log.o
 OBJECTS += stdio.o check.o paging.o module.o kheap.o mem.o string.o pd.o user_mode.o
 OBJECTS += tss.o syscall.o tss_asm.o
 OBJECTS += disk/disk.o disk/streamer.o fs/pparser.o fs/file.o fs/fat/fat16.o
