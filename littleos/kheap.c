@@ -11,6 +11,15 @@
  *  |   0   | 000 | 000 |  0   |  -- 0x00 free block
  *  |   0   | 000 | 000 |  1   |  -- 0x01 used, no more block
  *  |   1   | 000 | 000 |  1   |  -- 0x81 used, more on the next entry
+ *  ----------------------------
+ *
+ * Example1:
+ *     entries: 01 81 01 00 00 00 00 00 (block1, block2)
+ *              -- -----
+ *
+ * Example2:
+ *     entries: 01 01 00 01 00 00 00 00 (block1, block2, block3)
+ *              -- --    --
  */
 
 #define HEAP_BLOCK_USED 1 << 0
@@ -44,8 +53,13 @@ void *kmalloc(size_t size) {
         i++;
         n--;
     }
-
+#if 0
     return get_block_addr(index);
+#else
+    void *ptr = get_block_addr(index);
+    printf("%s: index[%u], ptr=0x%x\n", __func__, index, (uint32_t *)ptr);
+    return ptr;
+#endif
 }
 
 void *kcalloc(size_t size) {
@@ -61,6 +75,7 @@ void kfree(void *ptr) {
     }
 
     size_t i = get_block_index(ptr);
+    printf("%s: index[%u], ptr=0x%x\n", __func__, i, (uint32_t *)ptr);
     for (; i < kheap.table.size; i++) {
         uint8_t entry = kheap.table.entries[i];
         clear_block_entry(i);
@@ -122,10 +137,7 @@ static void *get_block_addr(int index) {
 
 static size_t get_block_index(void *addr) {
     size_t offset = (uint8_t *)addr - (uint8_t *)kheap.addr;
-    if (offset % BLOCK_SIZE == 0) {
-        return offset / BLOCK_SIZE;
-    }
-    return offset / BLOCK_SIZE + 1;
+    return offset / BLOCK_SIZE;
 }
 
 static void clear_block_entry(size_t index) {

@@ -103,6 +103,8 @@ void kheap_check() {
     void *ptr5 = kmalloc(4097);
     printf("ptr5: %x\n", ptr5);
     kheap_print_table_entries(8);
+    kfree((uint32_t *)ptr5 + 0x30);
+    kheap_print_table_entries(8);
 }
 
 void kernel_check() {
