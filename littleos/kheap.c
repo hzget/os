@@ -1,5 +1,6 @@
 
 #include "kheap.h"
+#include "log.h"
 #include "mem.h"
 #include "stdio.h"
 #include "string.h"
@@ -57,7 +58,8 @@ void *kmalloc(size_t size) {
     return get_block_addr(index);
 #else
     void *ptr = get_block_addr(index);
-    printf("%s: index[%u], ptr=0x%x\n", __func__, index, (uint32_t *)ptr);
+    log_debug("", "%s: index[%u], ptr=0x%x\n", __func__, index,
+              (uint32_t *)ptr);
     return ptr;
 #endif
 }
@@ -75,7 +77,7 @@ void kfree(void *ptr) {
     }
 
     size_t i = get_block_index(ptr);
-    printf("%s: index[%u], ptr=0x%x\n", __func__, i, (uint32_t *)ptr);
+    log_debug("", "%s: index[%u], ptr=0x%x\n", __func__, i, (uint32_t *)ptr);
     for (; i < kheap.table.size; i++) {
         uint8_t entry = kheap.table.entries[i];
         clear_block_entry(i);
