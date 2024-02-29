@@ -7,7 +7,7 @@
 
 int memcmp(const uint8_t *s1, const uint8_t *s2, size_t n);
 void memcpy(uint8_t *dest, const uint8_t *src, uint32_t len);
-void memset(uint8_t *dest, uint8_t val, uint32_t len);
+void *memset(void *s, uint8_t c, size_t n);
 int strcmp(char *str1, char *str2);
 int strncmp(const char *s1, const char *s2, size_t n);
 int strncasecmp(const char *s1, const char *s2, size_t n);

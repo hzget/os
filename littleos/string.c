@@ -30,11 +30,15 @@ int memcmp(const uint8_t *s1, const uint8_t *s2, size_t n) {
     return 0;
 }
 
-// Write len copies of val into dest.
-void memset(uint8_t *dest, uint8_t val, uint32_t len) {
-    for (; len > 0; len--) {
-        *(dest++) = val;
+/** memset fills the first n bytes of the memory area
+ *  pointed to by s with the constant byte c.
+ */
+void *memset(void *s, uint8_t c, size_t n) {
+    uint8_t *dest = (uint8_t *)s;
+    for (; n > 0; n--) {
+        *(dest++) = c;
     }
+    return s;
 }
 
 // Compare two strings. Should return -1 if
