@@ -4,6 +4,8 @@
 #     https://wiki.osdev.org/GCC_Cross-Compiler
 #
 #
+.PHONY: test
+
 OBJECTS = loader.o kmain.o framebuffer.o io.o serial.o segments.o gdt.o interrupts.o interrupt_handlers.o pic.o keyboard.o log.o
 OBJECTS += stdio.o check.o paging.o module.o kheap.o mem.o string.o pd.o user_mode.o
 OBJECTS += tss.o syscall.o tss_asm.o
@@ -76,12 +78,19 @@ qemugdb: os.iso
 	./c_to_nasm.sh $(AS_HEADERS)
 	$(AS) $(ASFLAGS) $< -o $@
 
+test:
+	@echo '-> unit test'
+	@make --no-print-directory -C test all
+
 clean:
 	@echo '-> Cleaning apps'
 	@make --no-print-directory -C apps clean
 	@echo ''
 	@echo '-> Cleaning harddisk'
 	@make --no-print-directory -C $(HDDIR) clean
+	@echo ''
+	@echo '-> Cleaning test'
+	@make --no-print-directory -C test clean
 	@echo ''
 	@echo '-> Cleaning bin'
 	if [ -d $(BIN_PATH) ]; then rm $(BIN_PATH) -rf; fi
