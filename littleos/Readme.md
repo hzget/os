@@ -22,6 +22,27 @@ Our repo will complete the code in this book.
 * [ ] Multitasking
 * [ ] add gcc options -Wconversion to avoid unexpected behavior
 
+Unit Test
+---------
+
+Currently support to run a unit test with ***cmocka***.
+For example:
+
+```bash
+# make test
+> unit test
+rm *_test *.o *.so -rf
+gcc -c -fPIC -I../ ../string.c -o string.o -fno-builtin
+gcc -shared -Wl,-soname,libstring.so -o libstring.so string.o
+gcc -o string_test string_test.c -L. -Wl,-R. -lstring -lcmocka -DUNIT_TESTING=1 -fno-builtin
+./string_test
+[==========] Running 1 test(s).
+[ RUN      ] test_strlen
+[       OK ] test_strlen
+[==========] 1 test(s) run.
+[  PASSED  ] 1 test(s).
+```
+
 structure
 ---------
 
