@@ -100,7 +100,7 @@ char *strcat(char *dest, const char *src) {
 }
 
 size_t strlen(const char *s) {
-    int n = 0;
+    size_t n = 0;
     while (*s != '\0') {
         s++;
         n++;
@@ -116,14 +116,13 @@ size_t strlen(const char *s) {
  * in the string pointed to by s and never beyond s[maxlen-1].
  */
 size_t strnlen(const char *s, size_t maxlen) {
-    size_t n = 0;
-    while (*s != '\0') {
-        s++;
-        n++;
-        if (n == maxlen - 1) {
-            return n;
+    size_t n;
+    for (n = 0; n < maxlen; n++) {
+        if (s[n] == '\0') {
+            break;
         }
     }
+
     return n;
 }
 
