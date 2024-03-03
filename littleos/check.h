@@ -20,5 +20,6 @@ void check_disk();
 void check_streamer();
 void check_pparser();
 void check_fopen();
+void check_task();
 
 #endif /* CHECK_H */

@@ -3,6 +3,7 @@
 #include "paging.h"
 #include "constants.h"
 #include "interrupts.h"
+#include "log.h"
 #include "stdio.h"
 
 extern uint32_t kernel_pd;
@@ -13,8 +14,47 @@ static void pd_mmap(uint32_t *pd, void *vaddr, void *paddr, uint8_t flags);
 static void pde_vaddr_to_paddr(uint32_t *pd);
 static void copy_kernel_pd(uint32_t *pd, uint32_t *kernel_pd);
 
-void switch_pd(uint32_t *pd) {
+void paging_switch(uint32_t *pd) {
     set_pd((uint32_t)pd - KERNEL_START_VADDR);
+}
+
+void paging_print_pd(uint32_t *pd) {
+    log_debug("paging", "pd info:\n");
+    size_t i = 0;
+    for (; i < PD_SIZE; i++) {
+        if ((&kernel_pd)[i] == pd[i]) {
+            continue;
+        }
+        uint32_t *table =
+            (uint32_t *)((pd[i] & 0xFFFFF000) + KERNEL_START_VADDR);
+        size_t j = 0;
+        log_debug("paging", "pd[%u] = 0x%x\n", i, table);
+        for (; j < PT_SIZE; j++) {
+            if (table[j] != 0x0) {
+                log_debug("paging", "    table[%u] = 0x%x\n", j,
+                          (uint32_t *)table[j]);
+            }
+        }
+    }
+}
+
+void paging_free(uint32_t *pd) {
+    size_t i = 0;
+    for (; i < PD_SIZE; i++) {
+        if ((&kernel_pd)[i] == pd[i]) {
+            continue;
+        }
+        size_t j = 0;
+        uint32_t *table =
+            (uint32_t *)((pd[i] & 0xFFFFF000) + KERNEL_START_VADDR);
+        for (; j < PT_SIZE; j++) {
+            if (table[j] != 0x0) {
+                kfree((void *)(table[j] + KERNEL_START_VADDR));
+            }
+        }
+        kfree((void *)table);
+    }
+    kfree(pd);
 }
 
 uint32_t *create_user_pd() {
@@ -33,6 +73,8 @@ uint32_t *create_user_pd() {
 
     copy_kernel_pd(pd, &kernel_pd);
 
+    paging_print_pd(pd);
+
     return pd;
 }
 
@@ -50,7 +92,8 @@ static void pd_mmap(uint32_t *pd, void *vaddr, void *paddr, uint8_t flags) {
     //       vaddr, paddr, flags);
     if (pd[idx] == 0) {
         pd[idx] = ((uint32_t)kcalloc(BLOCK_SIZE) & 0xFFFFF000) | flags;
-        //  printf("%s: add table pd[0x%x] = 0x%x\n", __func__, idx, pd[idx]);
+        log_debug("paging", "%s: add table pd[0x%x] = 0x%x\n", __func__, idx,
+                  pd[idx]);
     }
 
     uint32_t *table = (uint32_t *)(pd[idx] & 0xFFFFF000);

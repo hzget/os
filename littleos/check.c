@@ -2,11 +2,13 @@
 #include "constants.h"
 #include "disk.h"
 #include "kheap.h"
+#include "log.h"
 #include "multiboot.h"
 #include "pparser.h"
 #include "stdio.h"
 #include "streamer.h"
 #include "string.h"
+#include "task.h"
 #include <stdint.h>
 
 extern uint32_t grub_multiboot_info;
@@ -33,6 +35,12 @@ void page_fault_check() {
 
 void check_address_access(uint32_t *addr) {
     printf("%s: 0x%08x[0]=0x%08x\n", __func__, addr, addr[0]);
+}
+
+void check_task() {
+    struct task *t = task_new();
+    log_debug("check_task", "task pd=0x%x\n", t->page_directory);
+    task_free(t);
 }
 
 void check_disk() {
