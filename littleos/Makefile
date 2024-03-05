@@ -10,6 +10,7 @@ OBJECTS = loader.o kmain.o framebuffer.o io.o serial.o segments.o gdt.o interrup
 OBJECTS += stdio.o check.o paging.o module.o kheap.o mem.o string.o pd.o user_mode.o
 OBJECTS += tss.o syscall.o tss_asm.o
 OBJECTS += disk/disk.o disk/streamer.o fs/pparser.o fs/file.o fs/fat/fat16.o
+OBJECTS += task/task.o task/process.o
 
 AS = nasm
 #AS = i686-elf-as
@@ -19,7 +20,7 @@ LD = $(CC)
 ASFLAGS = -f elf
 CFLAGS = -std=gnu99 -ffreestanding -O0 -Wall -Wextra -Werror -c -g
 CFLAGS += -pedantic
-CFLAGS += -I. -I./disk -I./fs -I./fs/fat
+CFLAGS += -I. -I./disk -I./fs -I./fs/fat -I./task
 LDFLAGS = -T link.ld -ffreestanding -O0 -nostdlib -lgcc
 
 AS_HEADERS = constants.inc
@@ -69,7 +70,8 @@ qemu: os.iso
 	qemu-system-i386 -boot d -cdrom os.iso -hdb $(HD) -m 256M -serial file:com1.qemu.out
 qemugdb: os.iso
 	#qemu-system-i386 -s -S -m 32M -boot c -hda master.img
-	qemu-system-i386 -s -S -m 256M -boot d -cdrom os.iso -hdb $(HD)
+	qemu-system-i386 -s -S -m 256M -boot d -cdrom os.iso -hdb $(HD) -serial file:com1.qemu.out
+
 
 %.o: %.c
 	$(CC) $(CFLAGS)  $< -o $@

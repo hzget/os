@@ -6,4 +6,7 @@
 
 #define MAX_FILENAME_PATH 64
 
+#define MAX_PROCESSES 256
+#define MAX_PROGRAM_ALLOCATIONS 1024
+
 #endif

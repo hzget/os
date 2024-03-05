@@ -2,11 +2,14 @@
 #include "constants.h"
 #include "disk.h"
 #include "kheap.h"
+#include "log.h"
 #include "multiboot.h"
 #include "pparser.h"
+#include "process.h"
 #include "stdio.h"
 #include "streamer.h"
 #include "string.h"
+#include "task.h"
 #include <stdint.h>
 
 extern uint32_t grub_multiboot_info;
@@ -21,7 +24,7 @@ static void mbi_check_overview();
 static void mbi_check_mmap();
 static void mbi_check_init();
 
-void page_fault_check() {
+void check_page_fault() {
     // normal
     uint32_t *ptr = (uint32_t *)0xC0100000;
     printf("[0x%08x] is 0x%08x\n", ptr, *ptr);
@@ -33,6 +36,26 @@ void page_fault_check() {
 
 void check_address_access(uint32_t *addr) {
     printf("%s: 0x%08x[0]=0x%08x\n", __func__, addr, addr[0]);
+}
+
+void check_process() {
+    log_debug("check", "enter %s()\n", __func__);
+    struct process *process;
+    int res = process_load_switch("1:/hello.txt", &process);
+    if (res < 0) {
+        printf("%s: res == %d\n", __func__, res);
+        return
+    }
+
+    // how to free the process?
+
+    log_debug("check", "leaving %s()\n", __func__);
+}
+
+void check_task() {
+    struct task *t = task_new();
+    log_debug("check_task", "task pd=0x%x\n", t->page_directory);
+    task_free(t);
 }
 
 void check_disk() {
@@ -86,7 +109,7 @@ void check_fopen() {
     }
 }
 
-void kheap_check() {
+void check_kheap() {
     void *ptr1 = kmalloc(4096);
     printf("ptr1: %x\n", ptr1);
     void *ptr2 = kmalloc(4097);
@@ -107,7 +130,7 @@ void kheap_check() {
     kheap_print_table_entries(8);
 }
 
-void kernel_check() {
+void check_kernel() {
     uint32_t _pstart = (uint32_t)&kernel_physical_start;
     uint32_t _pend = (uint32_t)&kernel_physical_end;
     uint32_t _vstart = (uint32_t)&kernel_virtual_start;
@@ -118,7 +141,7 @@ void kernel_check() {
            _pstart, _pend, _pend - _pstart, _vstart, _vend, _vend - _vstart);
 }
 
-void multiboot_check() {
+void check_multiboot() {
     mbi_check_init();
     mbi_check_overview();
     mbi_check_mmap();
