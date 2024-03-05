@@ -15,17 +15,17 @@ void memcpy(uint8_t *dest, const uint8_t *src, uint32_t len) {
  * of s1 is found, respectively, to be less than, to match, or be
  * greater than the first n bytes of s2.
  */
-int memcmp(const uint8_t *s1, const uint8_t *s2, size_t n) {
+int memcmp(const void *s1, const void *s2, size_t n) {
+    const uint8_t *b1, *b2;
+    b1 = (const uint8_t *)s1;
+    b2 = (const uint8_t *)s2;
     for (size_t i = 0; i < n; i++) {
-        if (*s1 == '\0' || *s2 == '\0') {
-            return *s1 - *s2;
-        }
-        if (*s1 == *s2) {
-            s1++;
-            s2++;
+        if (*b1 == *b2) {
+            b1++;
+            b2++;
             continue;
         }
-        return *s1 - *s2;
+        return *b1 - *b2;
     }
     return 0;
 }
@@ -42,10 +42,10 @@ void *memset(void *s, uint8_t c, size_t n) {
 }
 
 // Compare two strings. Should return -1 if
-// str1 < str2, 0 if they are equal or 1 otherwise.
-int strcmp(char *str1, char *str2) {
+// s1 < s2, 0 if they are equal or 1 otherwise.
+int strcmp(const char *s1, const char *s2) {
     while (1) {
-        char c1 = *(str1++), c2 = *(str2++);
+        char c1 = *(s1++), c2 = *(s2++);
         if (c1 == c2) {
             if (c1 == '\0') {
                 return 0;
