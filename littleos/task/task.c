@@ -94,7 +94,7 @@ int task_switch(struct task *task) {
 static int task_init(struct task *task) {
     memset(task, 0, sizeof(struct task));
 
-    task->page_directory = create_user_pd();
+    task->page_directory = paging_new_directory();
     if (!task->page_directory) {
         return -EIO;
     }

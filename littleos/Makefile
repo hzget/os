@@ -10,7 +10,7 @@ OBJECTS = loader.o kmain.o framebuffer.o io.o serial.o segments.o gdt.o interrup
 OBJECTS += stdio.o check.o paging.o module.o kheap.o mem.o string.o pd.o user_mode.o
 OBJECTS += tss.o syscall.o tss_asm.o
 OBJECTS += disk/disk.o disk/streamer.o fs/pparser.o fs/file.o fs/fat/fat16.o
-OBJECTS += task/task.o
+OBJECTS += task/task.o task/process.o
 
 AS = nasm
 #AS = i686-elf-as

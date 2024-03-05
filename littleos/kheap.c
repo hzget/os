@@ -1,7 +1,9 @@
 
 #include "kheap.h"
+#include "constants.h"
 #include "log.h"
 #include "mem.h"
+#include "status.h"
 #include "stdio.h"
 #include "string.h"
 
@@ -178,4 +180,17 @@ void kheap_print_table_entries(size_t n) {
             break;
         }
     }
+}
+
+static int addr_in_heap_range(void *vaddr) {
+    return ((uint32_t)vaddr >= (uint32_t)kheap.addr &&
+            (uint32_t)vaddr < (uint32_t)kheap.addr + HEAP_SIZE);
+}
+
+int kheap_get_paddr(void *vaddr, void *paddr) {
+    if (!addr_in_heap_range(vaddr)) {
+        return -EINVARG;
+    }
+    *(uint32_t *)paddr = (uint32_t)vaddr - KERNEL_START_VADDR;
+    return 0;
 }
