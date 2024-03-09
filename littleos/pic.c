@@ -94,9 +94,9 @@ void pic_reinitialize() {
     io_wait();
 
     // Setup Interrupt Mask Register (IMR)
-    // In our case, we will only use interrupt from keyboard,
-    // thus enable IRQ 1 only (keyboard) - 1111 1101
-    outb(PIC_1_DATA, 0xFD);
+    // In our case, we will use timer/keyboard interrupt,
+    // thus enable IRQ0 and IRQ1 - 1111 1100
+    outb(PIC_1_DATA, 0xFC);
     outb(PIC_2_DATA, 0xFF);
 
     // Enable interrupts.

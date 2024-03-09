@@ -9,6 +9,7 @@
 #include "kheap.h"
 #include "module.h"
 #include "paging.h"
+#include "pit.h"
 #include "segments.h"
 #include "serial.h"
 #include "stdio.h"
@@ -35,9 +36,10 @@ void kmain() {
     check_disk();
     init_tss();
     init_syscalls();
+    init_pit();
     check_task();
-    // check_process();
-    run_apps();
+    check_process();
+    // run_apps();
     check_pparser();
     check_streamer();
     check_fopen();

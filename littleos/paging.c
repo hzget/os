@@ -131,20 +131,17 @@ static void copy_kernel_pd(uint32_t *pd, uint32_t *kernel_pd) {
     }
 }
 
-static void page_fault(struct cpu_state, uint32_t, struct stack_state stack);
+static void *page_fault(struct interrupt_frame *frame);
 
 void init_paging() {
     register_interrupt_handler(E_Page_Fault, page_fault);
 }
 
-static void page_fault(struct cpu_state cpu, uint32_t interrupt,
-                       struct stack_state stack) {
-    (void)cpu;
-    (void)interrupt;
+static void *page_fault(struct interrupt_frame *frame) {
     uint32_t faulting_address;
     __asm__ volatile("mov %%cr2, %0" : "=r"(faulting_address));
 
-    uint32_t ecode = stack.error_code;
+    uint32_t ecode = frame->error_code;
     int present = !(ecode & 0x1); // Page not present
     int rw = ecode & 0x2;         // Write operation?
     int us = ecode & 0x4;         // Processor was in user-mode?
@@ -166,6 +163,7 @@ static void page_fault(struct cpu_state cpu, uint32_t interrupt,
     }
     printf(") at 0x%08x\n", faulting_address);
     PANIC("Page fault");
+    return 0;
 }
 
 void *paging_align_address(void *ptr) {

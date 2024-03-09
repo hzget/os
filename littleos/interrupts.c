@@ -31,20 +31,15 @@ void register_interrupt_handler(uint8_t n, isr_t handler) {
 
 /** interrupt_handler
  *  Handles interrupts.
- *
- *  @param cpu_state cpu registers that were saved in the stack
- *                   when an interrupt occurs
- *  @param interrupt num of this interrupt
- *  @param stack_state stack info that were saved in the stack
- *                   when an interrupt occurs
  */
-void interrupt_handler(struct cpu_state cpu, uint32_t interrupt,
-                       struct stack_state stack) {
-    isr_t handler = interrupt_handlers[interrupt];
+void *interrupt_handler(struct interrupt_frame *frame) {
+    void *res = 0;
+    isr_t handler = interrupt_handlers[frame->interrupt];
     if (handler) {
-        handler(cpu, interrupt, stack);
+        res = handler(frame);
     }
-    pic_acknowledge(interrupt);
+    pic_acknowledge(frame->interrupt);
+    return res;
 }
 
 static void idt_set_descriptor(uint8_t vector, void *isr, uint8_t flags) {

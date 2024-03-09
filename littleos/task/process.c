@@ -229,6 +229,8 @@ int process_load_for_slot(const char *filename, struct process **process,
         goto out;
     }
 
+    task->mmapped = 1;
+
     *process = _process;
 
     // Add the process to the array
