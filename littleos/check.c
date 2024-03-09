@@ -4,6 +4,7 @@
 #include "kheap.h"
 #include "log.h"
 #include "multiboot.h"
+#include "pit.h"
 #include "pparser.h"
 #include "process.h"
 #include "stdio.h"
@@ -41,19 +42,28 @@ void check_address_access(uint32_t *addr) {
 void check_process() {
     log_debug("check", "enter %s()\n", __func__);
     struct process *process;
-    int res = process_load_switch("1:/hello.txt", &process);
+    int res = process_load_switch("1:/sayhello.bin", &process);
     if (res < 0) {
         printf("%s: res == %d\n", __func__, res);
-        return
+        goto out;
     }
 
+    res = process_load_switch("1:/saysorry.bin", &process);
+    if (res < 0) {
+        printf("%s: res == %d\n", __func__, res);
+        goto out;
+    }
+
+    task_run_first_ever_task();
+
+out:
     // how to free the process?
 
     log_debug("check", "leaving %s()\n", __func__);
 }
 
 void check_task() {
-    struct task *t = task_new();
+    struct task *t = task_new(NULL);
     log_debug("check_task", "task pd=0x%x\n", t->page_directory);
     task_free(t);
 }

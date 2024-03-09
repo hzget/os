@@ -12,13 +12,13 @@ struct task *current_task = 0;
 struct task *task_tail = 0;
 struct task *task_head = 0;
 
-static int task_init(struct task *task);
+static int task_init(struct task *task, struct process *process);
 
 struct task *task_current() {
     return current_task;
 }
 
-struct task *task_new() {
+struct task *task_new(struct process *process) {
     int res = 0;
     struct task *task = kcalloc(sizeof(struct task));
     if (!task) {
@@ -26,7 +26,7 @@ struct task *task_new() {
         goto out;
     }
 
-    res = task_init(task);
+    res = task_init(task, process);
     if (res != STATUS_OK) {
         goto out;
     }
@@ -52,11 +52,34 @@ out:
 }
 
 struct task *task_get_next() {
+    if (!current_task) {
+        return NULL;
+    }
     if (!current_task->next) {
         return task_head;
     }
 
     return current_task->next;
+}
+
+void task_next() {
+    int res = 0;
+    struct task *next_task = task_get_next();
+    if (!next_task) {
+        printf("No more tasks!\n");
+        return;
+    }
+
+    if (next_task == current_task) {
+        // do nothing
+        return;
+    }
+    res = task_switch(next_task);
+    if (res < 0) {
+        printf("memory not mapped!\n");
+        return;
+    }
+    task_return(&next_task->registers);
 }
 
 static void task_list_remove(struct task *task) {
@@ -86,12 +109,28 @@ int task_free(struct task *task) {
 }
 
 int task_switch(struct task *task) {
+    if (!task->mmapped) {
+        return -1;
+    }
     current_task = task;
     paging_switch(task->page_directory);
     return 0;
 }
 
-static int task_init(struct task *task) {
+void task_run_first_ever_task() {
+    if (!current_task) {
+        PANIC("task_run_first_ever_task(): No current task exists!\n");
+    }
+
+    int res = task_switch(task_head);
+    if (res < 0) {
+        return;
+    }
+
+    task_return(&task_head->registers);
+}
+
+static int task_init(struct task *task, struct process *process) {
     memset(task, 0, sizeof(struct task));
 
     task->page_directory = paging_new_directory();
@@ -104,5 +143,39 @@ static int task_init(struct task *task) {
     task->registers.esp = USER_STACK_VADDR;
     task->registers.ss = USER_DATA_SEGMENT_SELECTOR;
 
+    task->process = process;
+
     return 0;
+}
+
+void task_save_state(struct task *task, struct interrupt_frame *frame) {
+    task->registers.ip = frame->ip;
+    task->registers.cs = frame->cs;
+    task->registers.flags = frame->flags;
+    task->registers.esp = frame->esp;
+    task->registers.ss = frame->ss;
+    task->registers.eax = frame->eax;
+    task->registers.ebp = frame->ebp;
+    task->registers.ebx = frame->ebx;
+    task->registers.ecx = frame->ecx;
+    task->registers.edi = frame->edi;
+    task->registers.edx = frame->edx;
+    task->registers.esi = frame->esi;
+}
+
+void task_current_save_state(struct interrupt_frame *frame) {
+    if (!task_current()) {
+        PANIC("No current task to save\n");
+    }
+
+    struct task *task = task_current();
+    task_save_state(task, frame);
+}
+
+void *task_get_stack_item(struct task *task, int index) {
+    void *result = 0;
+    uint32_t *sp_ptr = (uint32_t *)task->registers.esp;
+
+    result = (void *)sp_ptr[index];
+    return result;
 }

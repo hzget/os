@@ -7,6 +7,7 @@ global user_registers
 
 ; void task_return(struct registers* regs);
 task_return:
+    xchg bx, bx                 ; used for bochs breakpoint
     mov ebp, esp
     ; PUSH THE DATA SEGMENT (SS WILL BE FINE)
     ; PUSH THE STACK ADDRESS
@@ -33,6 +34,9 @@ task_return:
     ; Push the IP to execute
     push dword [ebx+28]
 
+; disable_interrupt:
+    cli
+
     ; Setup some segment registers
     mov ax, [ebx+44]
     mov ds, ax
@@ -45,6 +49,7 @@ task_return:
     add esp, 4
 
     ; Let's leave kernel land and execute in user land!
+    ; or iret?
     iretd
     
 ; void restore_general_purpose_registers(struct registers* regs);

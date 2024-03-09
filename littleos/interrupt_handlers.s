@@ -16,8 +16,14 @@ isr_stub_%+%1:
 
 common_interrupt_handler:               ; the common parts of the generic interrupt handler
     pushad
-    xchg bx, bx
+
+    ; Push the stack pointer so that we are pointing to the interrupt frame
+    push esp
+    ; attention: please do not modify eax since here
     call    interrupt_handler
+    ; attention: please do not modify eax since here
+    add esp, 4
+
     popad
 
     ; restore the esp
@@ -61,7 +67,7 @@ isr_err_stub    30
 isr_no_err_stub 31
 ; IRQ please refer to
 ; https://wiki.osdev.org/Interrupts#Standard_ISA_IRQs
-isr_no_err_stub 32 ; IRQ0
+isr_no_err_stub 32 ; IRQ0 - PIT
 isr_no_err_stub 33 ; IRQ1 - keyboard
 
 isr_no_err_stub 128 ; for system call (int 0x80)

@@ -1,6 +1,8 @@
 #ifndef TASK_H
 #define TASK_H
 
+#include "interrupts.h"
+#include "process.h"
 #include <stdint.h>
 
 struct registers {
@@ -24,9 +26,24 @@ struct task {
     struct registers registers;
     struct task *next;
     struct task *prev;
+    struct process *process;
+    int mmapped;
 };
 
-struct task *task_new();
+struct process;
+
+struct task *task_new(struct process *process);
+struct task *task_current();
 int task_free(struct task *task);
 int task_switch(struct task *task);
+
+void task_next();
+void task_return(struct registers *regs);
+void restore_general_purpose_registers(struct registers *regs);
+void user_registers();
+
+void task_run_first_ever_task();
+
+void task_current_save_state(struct interrupt_frame *frame);
+void *task_get_stack_item(struct task *task, int index);
 #endif
