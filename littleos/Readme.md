@@ -19,9 +19,9 @@ Our repo will complete the code in this book.
 * [x] User mode
 * [x] System Calls
 * [x] File Systems
-* [ ] Multitasking
+* [x] Multitasking
 * [ ] add gcc options -Wconversion to avoid unexpected behavior
-* [ ] unit test
+* [x] unit test
 
 structure
 ---------
@@ -152,6 +152,10 @@ physical address 0x00100000 ~ kernelsize
 (BIOS and GRUB code loaded below 1 MB)
 virtual address  0xC0000000 ~ 0xC0100000 ----->  
 physical address 0x00000000 ~ 0x00100000
+
+user address space:
+virtual address 0x00000000 ~ 0xBFFFFFFF ----->
+physical address (it depends on memory that comes from kmalloc/kcalloc)
 ```
 
 Paging in x86 consists of a page directory (PDT) that can contain
@@ -159,6 +163,15 @@ references to 1024 page tables (PT), each of which can point to
 1024 sections of **physical memory** called page frames (PF).
 Each page frame is 4096 byte large.
 
+
+***Structure of the code***:
+
+* [paging.h](./paging.h) provides interfaces to create page directory,
+map memory address, switch pages and so forth.  
+* [pd.s](./pd.s) provides functions to enable a page directory.  
+
+
+***References***:  
 [littelosbook][littleosbook] gives a simple and clear explanation
 of paging mechnism.  
 [paging][paging] gives details of PDT, PT, MMU  
@@ -215,10 +228,47 @@ user ---- | File    |-------| FAT16  | ---- |  data  | ------------- | Harddisk 
  * [disk/disk.h](./disk/disk.h) contains disk operations that take a sector as a unit
  * [io.h](./io.h) contains in/out funcs to access harddisk via ATA specification
 
-References:  
+***References***:  
 http://www.maverick-os.dk/FileSystemFormats/FAT16_FileSystem.html  
 https://wiki.osdev.org/FAT  
 https://github.com/nibblebits/PeachOS  
+
+Multitasking System
+-------------------
+[Multitasking System][Multitasking System] are operating systems
+which share available processor time between multiple tasks automatically.
+
+***Mechanism***: When a task (process, thread, application, program, ...)
+is using the CPU, some of the task's state is stored in the CPU -
+things like the contents of registers, the address of the task's current stack,
+the current instruction pointer, which virtual address space the task is using, etc.
+
+A task switch involves saving any state that the previous task
+had in the CPU (that the task may have modified) and then loading
+any state that the next task expects to be in the CPU. Typically
+a kernel stores at some of this state on the task's (kernel) stack
+and some of the state in data structure/s in kernel-space
+(e.g. in a "task control block" structure).
+
+In our case, we use Programmable Interval Timer (PIT) to fire an IRQ0
+interrupt periodically to perform preemptive multitasking. Each time
+when the IRQ0 comes, the cpu switches to the next task.
+
+
+***Structure of the code***:
+
+* [task/task.h](./task/task.h) provides data structures and functions to 
+create/delete/get tasks, save task state and so forth
+* [task/task_asm.s](./task/task_asm.s) provides underlying codes to
+perform a task switch, restore previous state and so forth
+* [task/process.h](./task/process.h) provides functions for processes
+* [pit.h](./pit.h) provides a clock timer to trigger a task switch
+
+***References***:  
+https://wiki.osdev.org/Multitasking_Systems  
+https://wiki.osdev.org/Kernel_Multitasking  
+https://wiki.osdev.org/Scheduling_Algorithms  
+https://wiki.osdev.org/Pit  
 
 Unit Test
 ---------
@@ -250,3 +300,4 @@ gcc -o string_test string_test.c -L. -Wl,-R. -lstring -lcmocka -DUNIT_TESTING=1 
 [GDT]: https://wiki.osdev.org/Global_Descriptor_Table
 [GDT Tutorial]: https://wiki.osdev.org/GDT_Tutorial
 [GDT (wikipedia)]: https://en.wikipedia.org/wiki/Global_Descriptor_Table
+[Multitasking System]: https://wiki.osdev.org/Multitasking_Systems
