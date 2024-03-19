@@ -24,7 +24,11 @@ v1.0.0-alpha
 
 v1.0.1-alpha
 
- * littleos - support paging, memory management, user mode, system call, filesystem
+ * littleos - supports paging, memory management, user mode, system call, filesystem
+
+v1.0.2-alpha
+
+ * littleos - supports multitask
 
 Structure
 ---------
