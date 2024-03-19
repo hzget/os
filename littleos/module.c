@@ -37,7 +37,7 @@ void run_apps() {
     addr += KERNEL_START_VADDR;
     printf("module start addr 0x%x, size 0x%x\n", addr, size);
 
-    switch_pd(create_user_pd());
+    paging_switch(create_user_pd());
 
     uint32_t *newaddr = USER_CODE_VADDR;
     memcpy((uint8_t *)newaddr, (uint8_t *)addr, size);
@@ -53,5 +53,5 @@ void run_apps() {
     // call_module_t start_program = (call_module_t)(newaddr);
     call_module_t start_program = (call_module_t)(USER_CODE_VADDR);
     start_program();
-    switch_pd(&kernel_pd);
+    paging_switch(&kernel_pd);
 }

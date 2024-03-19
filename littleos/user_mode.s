@@ -1,6 +1,4 @@
-
-CODE_SEGMENT_SELECTOR equ 0x18
-DATA_SEGMENT_SELECTOR equ 0x20
+%include "constants.inc"
 
 global enter_user_mode
 
@@ -11,11 +9,11 @@ enter_user_mode:
     ; [esp +  4]  cs      ; the code segment selector
     ; [esp +  0]  eip     ; the instruction pointer of user mode code to execute
 
-    push DATA_SEGMENT_SELECTOR | 0x3
+    push USER_DATA_SEGMENT_SELECTOR
     push 0xBFFFFFFB
     pushf             ; Push EFLAGS onto the stack
     or dword [esp], 2 ; Set the 9th bit (IF) to 1 using OR operation
-    push CODE_SEGMENT_SELECTOR | 0x3
+    push USER_CODE_SEGMENT_SELECTOR
     push 0x00000000
 
 ; disable_interrupt:
@@ -23,7 +21,7 @@ enter_user_mode:
 
 ; load_registers:
     xchg bx, bx
-    mov ax, DATA_SEGMENT_SELECTOR | 0x3
+    mov ax, USER_DATA_SEGMENT_SELECTOR
     mov ds, ax
     mov es, ax
     mov fs, ax

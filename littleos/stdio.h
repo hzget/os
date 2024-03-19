@@ -14,4 +14,6 @@ void printf(const char *format, ...);
         }                                                                      \
     } while (1)
 
+#define TMP_LOG() printf("at %s() line %d\n", __func__, __LINE__)
+
 #endif // STDIO_H

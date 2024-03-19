@@ -82,28 +82,24 @@ static void test_strncasecmp(void **state) {
     assert_true(strncasecmp("A", "[", 3) < 0);
 }
 
-//int memcmp(const void *s1, const void *s2, size_t n) {
 static void test_memcmp(void **state) {
     (void)state; /* unused */
-    assert_true(memcmp((uint8_t []){1,2,3}, (uint8_t []){1,2,3}, 3) == 0);
-    assert_true(memcmp((uint8_t []){1,2,3}, (uint8_t []){1,2,3}, 2) == 0);
-    assert_true(memcmp((uint8_t []){1,2,3}, (uint8_t []){1,2,3}, 0) == 0);
-    assert_true(memcmp((uint8_t []){1,0,3}, (uint8_t []){1,0,3}, 3) == 0);
-    assert_true(memcmp((uint8_t []){1,0,3}, (uint8_t []){1,0,3}, 2) == 0);
-    assert_true(memcmp((uint8_t []){1,0,4}, (uint8_t []){1,0,3}, 3) > 0);
-    assert_true(memcmp((uint8_t []){1,0,4}, (uint8_t []){1,0,3}, 2) == 0);
-    assert_true(memcmp((uint8_t []){1,0,4}, (uint8_t []){1,0,3}, 0) == 0);
-    assert_true(memcmp((uint8_t []){1,0,3}, (uint8_t []){1,0,4}, 3) < 0);
+    assert_true(memcmp((uint8_t[]){1, 2, 3}, (uint8_t[]){1, 2, 3}, 3) == 0);
+    assert_true(memcmp((uint8_t[]){1, 2, 3}, (uint8_t[]){1, 2, 3}, 2) == 0);
+    assert_true(memcmp((uint8_t[]){1, 2, 3}, (uint8_t[]){1, 2, 3}, 0) == 0);
+    assert_true(memcmp((uint8_t[]){1, 0, 3}, (uint8_t[]){1, 0, 3}, 3) == 0);
+    assert_true(memcmp((uint8_t[]){1, 0, 3}, (uint8_t[]){1, 0, 3}, 2) == 0);
+    assert_true(memcmp((uint8_t[]){1, 0, 4}, (uint8_t[]){1, 0, 3}, 3) > 0);
+    assert_true(memcmp((uint8_t[]){1, 0, 4}, (uint8_t[]){1, 0, 3}, 2) == 0);
+    assert_true(memcmp((uint8_t[]){1, 0, 4}, (uint8_t[]){1, 0, 3}, 0) == 0);
+    assert_true(memcmp((uint8_t[]){1, 0, 3}, (uint8_t[]){1, 0, 4}, 3) < 0);
 }
 
 int main(void) {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(test_strlen),
-        cmocka_unit_test(test_strnlen),
-        cmocka_unit_test(test_strcmp),
-        cmocka_unit_test(test_strncmp),
-        cmocka_unit_test(test_strncasecmp),
-        cmocka_unit_test(test_memcmp),
+        cmocka_unit_test(test_strlen),      cmocka_unit_test(test_strnlen),
+        cmocka_unit_test(test_strcmp),      cmocka_unit_test(test_strncmp),
+        cmocka_unit_test(test_strncasecmp), cmocka_unit_test(test_memcmp),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

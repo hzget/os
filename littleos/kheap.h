@@ -28,5 +28,6 @@ void *kcalloc(size_t size);
 void kfree(void *ptr);
 void init_kheap();
 void kheap_print_table_entries(size_t n);
+int kheap_get_paddr(void *vaddr, void *paddr);
 
 #endif /* KHEAP_H */
