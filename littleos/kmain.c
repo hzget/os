@@ -36,9 +36,9 @@ void kmain() {
     check_disk();
     init_tss();
     init_syscalls();
-    init_pit();
+    // init_pit();
     check_task();
-    check_process();
+    // check_process();
     // run_apps();
     check_pparser();
     check_streamer();
