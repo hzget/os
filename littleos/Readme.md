@@ -22,6 +22,7 @@ Our repo will complete the code in this book.
 * [x] Multitasking
 * [ ] add gcc options -Wconversion to avoid unexpected behavior
 * [x] unit test
+* [ ] user interface
 
 structure
 ---------
