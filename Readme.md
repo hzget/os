@@ -22,11 +22,11 @@ v1.0.0-alpha
  * bare - can run first kernel function
  * littleos - gdt, idt, framebuffer, serial
 
-v1.0.1-alpha
+v1.0.0-alpha.2
 
  * littleos - supports paging, memory management, user mode, system call, filesystem
 
-v1.0.2-alpha
+v1.0.0-beta
 
  * littleos - supports multitask
 
